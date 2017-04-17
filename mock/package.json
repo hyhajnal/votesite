@@ -1,0 +1,22 @@
+{
+  "name": "mock",
+  "version": "1.0.0",
+  "description": "json-server mock",
+  "main": "index.js",
+  "scripts": {
+    "create": "npm run seed.js",
+    "start": "json-server --watch data.json"
+  },
+  "keywords": [
+    "mock"
+  ],
+  "author": "hajnal",
+  "license": "ISC",
+  "devDependencies": {
+    "faker": "^4.1.0",
+    "moment": "^2.18.1",
+    "moment-precise-range-plugin": "^1.2.1",
+    "rosie": "^1.6.0",
+    "underscore": "^1.8.3"
+  }
+}

@@ -1,0 +1,29 @@
+.bg{
+	min-height:100vh; 
+}
+:global(.content){
+	//min-height: 800px;
+	width:980px;
+	margin: 60px auto;
+	height: auto !important;
+	background: #fff;
+}
+.footer{
+  background: #fff;
+}
+
+.sider{
+	position: absolute;
+	top: 0;
+	right: 0;
+  height: 100vh;
+}
+
+:global(.sider-show){
+	padding-right:136px;
+	transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+:global(.sider-close){
+	padding-right:64px; 
+}

@@ -1,0 +1,51 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "hajnal",
+  "license": "MIT",
+  "scripts": {
+    "build": "eslint index.js server/** bin/** test/**",
+    "start": "nodemon index.js",
+    "test": "mocha test"
+  },
+  "devDependencies": {
+    "babel-eslint": "*",
+    "babel-polyfill": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-stage-0": "*",
+    "babel-register": "*",
+    "chai": "^3.5.0",
+    "eslint": "*",
+    "eslint-config-airbnb": "*",
+    "mocha": "*",
+    "nodemon": "*",
+    "supertest": "*",
+    "supertest-as-promised": "*"
+  },
+  "dependencies": {
+    "bcrypt-as-promised": "^1.1.0",
+    "import-dir": "0.0.1",
+    "kerberos": "0.0.18",
+    "koa": "^2.0.0-alpha.3",
+    "koa-bodyparser": "^2.0.1",
+    "koa-compose": "^3.0.0",
+    "koa-convert": "^1.2.0",
+    "koa-cors": "0.0.16",
+    "koa-generic-session": "^1.10.1",
+    "koa-helmet": "^2.0.0-alpha.1",
+    "koa-json": "^2.0.2",
+    "koa-logger": "^2.0.0",
+    "koa-mongoose": "^2.0.0",
+    "koa-passport": "^2.0.1",
+    "koa-router": "^7.0.1",
+    "mongoose": "^4.3.7",
+    "mongoose-id-validator": "^0.1.10",
+    "mongoose-validator": "^1.2.4",
+    "oauth2orize-koa": "^1.3.2",
+    "passport-facebook": "^2.1.0",
+    "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
+    "uid": "0.0.2"
+  }
+}

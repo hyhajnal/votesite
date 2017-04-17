@@ -1,0 +1,24 @@
+
+.custom-image{
+	height:80px;
+	overflow: hidden;
+}
+
+.card-num{
+	font-size: 16px;
+	font-weight: bold;
+	color:#f04134;
+}
+
+.linemore{
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+}
+
+.lineone{
+	overflow: hidden;
+	text-overflow:ellipsis;
+	white-space: nowrap;
+}

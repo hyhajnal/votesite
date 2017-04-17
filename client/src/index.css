@@ -1,0 +1,54 @@
+
+html, body, :global(#root) {
+  height: 100%;
+}
+
+:global(.margin-c){
+	margin: 0 auto;
+}
+
+:global(.align-center){
+	text-align: center;
+}
+:global(.align-left){
+	text-align: left;
+}
+
+:global(.gutter){
+	padding:5px;
+}
+
+:global(.gutter-m){
+	margin:5px;
+}
+
+:global(.gutter-v){
+	padding:5px 0;
+}
+
+:global(.gutter-v-m){
+	margin:5px 0;
+}
+
+:global(.gutter-h){
+	padding:0 5px;
+}
+
+:global(.gutter-h-m){
+	margin:0 5px;
+}
+
+:global(.label-1){
+	font-size: 13px;
+	color: #333;
+}
+
+:global(.label-2){
+	color:#969696;
+}
+
+:global(.avator-c){
+	border-radius: 100%;
+	vertical-align: middle;
+}
+

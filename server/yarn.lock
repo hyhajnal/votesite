@@ -3377,6 +3377,13 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/util-deprecate/download/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
+utility@^1.11.0:
+  version "1.11.0"
+  resolved "http://registry.npm.taobao.org/utility/download/utility-1.11.0.tgz#25c70e983cd8f625eeb7e508a3da4541d1df4725"
+  dependencies:
+    copy-to "~2.0.1"
+    escape-html "~1.0.3"
+
 utils-merge@1.0.0, utils-merge@1.x.x:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/utils-merge/download/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"

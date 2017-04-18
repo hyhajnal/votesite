@@ -2,6 +2,7 @@ import path from 'path';
 
 const config = {
   listn_port: 3000,
+
   // 数据库连接
   mongodb: {
     user: '',

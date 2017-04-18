@@ -7,12 +7,15 @@ import convert from 'koa-convert';
 import json from 'koa-json';
 import mongoose from 'koa-mongoose';
 import config from './config';
+import response from './middleware/resdata';
 
 const app = new Koa();
 
 
 //用koa-convert对(generator函数)＊function语法糖进行转换
 app.use(convert(bodyParser()));
+//统一response
+app.use(response);
 //app.use(convert(json()));
 
 

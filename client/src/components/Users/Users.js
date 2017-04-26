@@ -7,9 +7,8 @@ import { PAGE_SIZE } from '../../constants';
 import UserModal from './UserModal';
 
 
-//参数为此components的state
+// 参数为此components的state
 function Users({ dispatch, list: dataSource, loading, total, page: current }) {
-
   function deleteHandler(id) {
     dispatch({
       type: 'users/remove',
@@ -115,5 +114,5 @@ function mapStateToProps(state) {
   };
 }
 
-//connect拿到mapStateToProps返回的数据，写入users组件，然后users组件就可以通过props访问了
+// connect拿到mapStateToProps返回的数据，写入users组件，然后users组件就可以通过props访问了
 export default connect(mapStateToProps)(Users);

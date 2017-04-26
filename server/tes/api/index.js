@@ -1,4 +1,4 @@
-'use strict';
+  'use strict';
 
 import importDir from 'import-dir';
 import supertest from 'supertest-as-promised';

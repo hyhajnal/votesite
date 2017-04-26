@@ -1,60 +1,62 @@
-'use strict';
-
 import mongoose from 'mongoose';
-import { localClient, adminUser } from './config';
-import Client from '../models/client';
-import User from '../models/user';
+import userModel from '../models/user';
+import commentModel from '../models/comment';
+import voteModel from '../models/vote';
+import Mock from 'mockjs';
+const Random = Mock.Random;
 
-export function connectDatabase(uri) {
-  return new Promise((resolve, reject) => {
-    mongoose.connection
-      .on('error', error => reject(error))
-      .on('close', () => console.log('Database connection closed.'))
-      .once('open', () => resolve(mongoose.connections[0]));
+// 数据库
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/votesite');
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('db connect!');
+});
 
-    mongoose.connect(uri);
-  });
+// const userModel    = db.model('user',userSchema),
+//       commentModel = db.model('comment', commentSchema),
+//       voteModel    = db.model('vote',voteSchema);
+
+const random_num = (min, max) => {
+  return parseInt(Math.random()*(max-min+1)+min,10)
 }
 
-export async function registerLocalClient() {
-  return new Promise((resolve, reject) => {
-    (async () => {
-      try {
-        const client = await Client.findOne({ id: localClient.id });
-        if (!client) {
-          await Client.create({
-            name: localClient.name,
-            id: localClient.id,
-            secret: localClient.secret,
-            trusted: true,
-          });
-        }
-        resolve();
-      } catch (error) {
-        reject(error);
-      }
-    })();
-  });
+const random_objectId = (array) => {
+  return array[random_num(0, array.length-1)];
 }
 
-export async function registerAdminUser() {
-  return new Promise((resolve, reject) => {
-    (async () => {
-      try {
-        const user = await User.findOne({ email: adminUser.email });
-        if (!user) {
-          await User.create({
-            name: adminUser.name,
-            email: adminUser.email,
-            password: adminUser.password,
-            confirm_password: adminUser.password,
-            admin: true,
-          });
-        }
-        resolve();
-      } catch (error) {
-        reject(error);
-      }
-    })();
-  });
+const commentfn = async () => {
+  let commentlist = await commentModel.find();
+  const userlist = await userModel.find({},{_id: 1});
+  const votelist = await voteModel.find({},{_id: 1});
+  const childlist = await commentModel.find({},{_id: 1});
+  commentlist.map((comment) => {
+    comment.voteId = random_objectId(votelist);
+    comment.from = random_objectId(userlist);
+    comment.to = random_objectId(userlist);
+    comment.childs.push(random_objectId(childlist));
+    comment.save((err) => {
+      if(err) console.log(err);
+    })
+  })
 }
+
+const votefn = async () => {
+  const userlist = await userModel.find({},{_id: 1});
+  const commentlist = await commentModel.find({},{_id: 1});
+  let votelist = await voteModel.find();
+  votelist.map((vote) => {
+    vote.user = random_objectId(userlist);
+    vote.comments = [];
+    for(let i=0; i<random_num(5,15); i++){ vote.comments.push(random_objectId(commentlist))}
+    vote.create_time = new Date(Random.datetime());
+    vote.active_time = new Date(Mock.mock('@datetime'));
+    vote.save((err) => {
+      if(err) console.log(err);
+    })
+  })
+}
+
+votefn();
+commentfn();

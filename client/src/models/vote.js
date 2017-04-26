@@ -4,63 +4,58 @@ import * as voteService from '../services/vote';
 export default {
   namespace: 'vote',
   state: {
-    isVote: false,
     posts: [],
     vote: {},
-    comment: {},
   },
   reducers: {
-    save(state, { payload: { data: posts} }){
+    save(state, { payload: { data: posts } }) {
       return { ...state, posts };
     },
-    save_vote(state, { payload: { vote, comment}}){
-      return { ...state, vote, comment};
+    save_vote(state, { payload: { data: vote } }) {
+      return { ...state, vote };
     },
-    to_vote(state, action){
-      return { ...state, isVote: true };
-    }
   },
   effects: {
-    *fetch({}, { call, put }) {
-      const { data } = yield call (voteService.fetch);
+    *fetch_list({ call, put }) {
+      let { data } = yield call(voteService.fetch);
+      data = data.data;
       yield put({
         type: 'save',
         payload: {
-          data
+          data,
         },
       });
     },
-    *fetch_vote({}, { call, put }) {
-      const [{ data: vote, } , { data: comment, } ] = yield [
-        call (voteService.fetchVote, 1),
-        call (voteService.fetchComment, 1)
-      ];
+    *fetch_vote({ payload: _id }, { call, put }) {
+      let { data } = yield call(voteService.fetchVote, _id);
+      data = data.data;
       yield put({
         type: 'save_vote',
         payload: {
-          vote,
-          comment
+          data,
         },
       });
     },
-    *to_vote({ },{call, put}) {
-      //yield call(voteService.toVote, topicId, itemId, voteId);
-      yield put({
-        type: 'to_vote'
-      });
-      // yield put({
-      //   type: 'save_vote'
-      // });
-    }
+    *to_vote({ payload: { voteId, idx } }, { call, put }) {
+      yield call(voteService.toVote, { voteId, idx });
+      yield put({ type: 'fetch_vote', payload: voteId });
+    },
+    *to_comment({ payload: { comment, pid, voteId } }, { call, put }) {
+      yield call(voteService, { comment, pid });
+      yield put({ type: 'fetch_vote', payload: voteId });
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
-      return history.listen(({ pathname }) => {
-        if(pathname === '/') {
-          dispatch({ type: 'fetch' });
+      return history.listen(({ pathname, query }) => {
+        if (pathname === '/') {
+          dispatch({ type: 'fetch_list' });
         }
-        if(pathname === '/vote') {
-          dispatch({ type: 'fetch_vote' });
+        if (pathname === '/vote') {
+          dispatch({
+            type: 'fetch_vote',
+            payload: query._id,
+          });
         }
       });
     },

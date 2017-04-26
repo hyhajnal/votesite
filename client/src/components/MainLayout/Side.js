@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Breadcrumb, Icon, Badge, Row } from 'antd';
-import styles from './Side.css';
+import { Layout, Menu, Icon, Row } from 'antd';
+import styles from './Side.less';
+
 const { SubMenu } = Menu;
-const { Header, Content, Sider } = Layout;
+const { Sider } = Layout;
 
 class Side extends Component {
   render() {
@@ -15,9 +16,11 @@ class Side extends Component {
           onCollapse={onCollapse}
           className={styles.slider}
         >
-          <Row type="flex" justify="center" style={{ margin:'20px 0 10px' }}>
-            <img alt="example" width="80" height="80" className="avator-c"
-            src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />
+          <Row type="flex" justify="center" style={{ margin: '20px 0 10px' }}>
+            <img
+              alt="example" width="80" height="80" className="avator-c"
+              src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+            />
           </Row>
           <Menu theme="dark" mode={mode} defaultSelectedKeys={['6']}>
             <SubMenu

@@ -1,7 +1,6 @@
 import React from 'react';
-import { connect } from 'dva';
-import styles from './Login.less';
 import { Button, Row, Form, Input } from 'antd';
+import styles from './Login.less';
 
 const FormItem = Form.Item;
 
@@ -13,19 +12,19 @@ const Login = ({
     validateFieldsAndScroll,
   },
 }) => {
-  function handleOk () {
+  function handleOk() {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
-        return
+        return errors;
       }
-      onOk(values)
-    })
+      onOk(values);
+    });
   }
 
   return (
     <div className={styles.form}>
       <div className={styles.logo}>
-        <img alt={'logo'} src="https://t.alipayobjects.com/images/rmsweb/T1B9hfXcdvXXXXXXXX.svg"/>
+        <img alt={'logo'} src="https://t.alipayobjects.com/images/rmsweb/T1B9hfXcdvXXXXXXXX.svg" />
         <span>Ant Design</span>
       </div>
       <form>
@@ -60,7 +59,8 @@ const Login = ({
         </p>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default Form.create()(Login)
+export default Form.create()(Login);
+

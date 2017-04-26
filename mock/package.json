@@ -14,9 +14,11 @@
   "license": "ISC",
   "devDependencies": {
     "faker": "^4.1.0",
+    "mockjs": "^1.0.1-beta3",
     "moment": "^2.18.1",
     "moment-precise-range-plugin": "^1.2.1",
     "rosie": "^1.6.0",
     "underscore": "^1.8.3"
-  }
+  },
+  "dependencies": {}
 }

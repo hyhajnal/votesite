@@ -3,7 +3,7 @@
 */
 
 import utility from 'utility';
-import crypto from 'crypto';
+import cryptoHelp from 'crypto';
 
 class UserController {
   
@@ -59,7 +59,7 @@ class UserController {
   static async register(ctx){
     const userModel = ctx.model('user');
     let new_user = ctx.body.user;
-    new_user.psd = 
+    new_user.psd = await cryptoHelp.cipher('aes-256-cbc', key, new_user.psd);
     const user = new userModel(new_user);
     ctx.success(user);
   }

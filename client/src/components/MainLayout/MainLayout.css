@@ -2,7 +2,7 @@
 	min-height:100vh; 
 }
 :global(.content){
-	//min-height: 800px;
+	/*min-height: 800px;*/
 	width:980px;
 	margin: 60px auto;
 	height: auto !important;

@@ -5,12 +5,11 @@ import routes from './routes';
 import bodyParser from 'koa-bodyparser';
 import convert from 'koa-convert';
 import json from 'koa-json';
-import mongoose from 'koa-mongoose';
 import config from './config';
 import response from './middleware/resdata';
+import mongoose from 'mongoose';
 
 const app = new Koa();
-
 
 //用koa-convert对(generator函数)＊function语法糖进行转换
 app.use(convert(bodyParser()));
@@ -18,15 +17,12 @@ app.use(convert(bodyParser()));
 app.use(response);
 //app.use(convert(json()));
 
-
-// 数据库
-mongoose.Promise = global.Promise
-app.use(convert(mongoose(Object.assign({
-  server: {
-    poolSize: 5
-  },
-  schemas: __dirname + '/models'
-}, config.mongodb))));
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/votesite');
+mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+mongoose.connection.once('open', () => {
+  console.log('db connect!');
+});
 
 routes(app);
 

@@ -55,7 +55,7 @@ class UserEditModal extends Component {
           onOk={this.okHandler}
           onCancel={this.hideModelHandler}
         >
-          <Form layout='horizontal' onSubmit={this.okHandler}>
+          <Form layout="horizontal" onSubmit={this.okHandler}>
             <FormItem
               {...formItemLayout}
               label="Name"

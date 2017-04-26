@@ -2,16 +2,16 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema; 
 const ObjectId = Schema.ObjectId;
 
-const Comment = new Schema({
-  _id: ObjectId,
+const commentSchema = new Schema({
   content: String,
-  time: Dtae,
+  time: Date,
   star: Number,
   msg: Number,
-  voteId: {type: ObjectId, ref: 'vote'},
-  from: {type: ObjectId, ref: 'user'},
-  to: {type: ObjectId, ref: 'user'},
-  childs: [ {type: ObjectId, ref: 'comment'} ],
+  pid: String,
+  voteId: {type: ObjectId, ref: 'Vote'},
+  from: {type: ObjectId, ref: 'User'},
+  to: {type: ObjectId, ref: 'User'},
+  childs: [ {type: ObjectId, ref: 'Comment'} ],
 });
 
-export default Comment;
+export default mongoose.model('Comment', commentSchema);

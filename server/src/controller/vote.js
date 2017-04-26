@@ -1,17 +1,29 @@
+import mongoose from 'mongoose';
+import voteModel from '../models/vote';
+import relationModel from '../models/relation';
+import userModel from '../models/user';
+import topicModel from '../models/topic';
+import commentModel from '../models/comment';
 
 class VoteController {
   
   /**
    * 获取votelist
-   * @param {String} topic 文学
-   * @param {String} sortKey time/view
+   * @param {String} tag 文学
+   * @param {String} sortkey create_time/view
+   * @param {Boolean} aesc 降序默认
    */
   static async list( ctx, next ){
-    const key = ctx.params.topic ? 
-                  { topic: ctx.params.topic } : {};
-    let sort = {};
-    if(ctx.params.topic) sort[ctx.params.sortkey] = 1;
-    const list = await ctx.model('vote').find(key, {sort: sort});
+    let findkey = ctx.query.tag ? 
+                  { tag: ctx.query.tag } : {};
+    let sortkey = {};
+    let list;
+    if(ctx.query.sortkey){
+      sortkey[ctx.query.sortkey] = ctx.query.aesc ? 1: -1;
+      list = await voteModel.find(findkey).sort(sortkey).populate('user');
+    }else{
+      list = await voteModel.find(findkey).populate('user');
+    }
     ctx.success(list);
   }
 
@@ -22,32 +34,35 @@ class VoteController {
    * @param {Number} itemIdx voteitem的idx
    */
   static async tovote( ctx, next ){
-    const userId = ctx.params.userId,
-          voteId = ctx.params.voteId,
-          itemIdx = ctx.params.itemIdx;
-
+    const { voteId, itemIdx } = ctx.params;
+    const userId = '58fc03c2b78b45f01353b04f';
     //voteitem.num++
-    let vote = await ctx.model('vote').findById(voteId);
-    let voteitems = vote.voteitems;
-    voteitems[itemIdx].num ++;
-    vote.voteitems = voteitems;
-    vote.save((err,relation) => {
-      if(err) ctx.error(err,'投票失败！');
-    });
+    let vote = await voteModel.findById(voteId);
+    // let v = vote.toJSON();  
+    vote.votelist[parseInt(itemIdx)].num ++;
+    try {
+      await vote.save()
+    } catch(e) {
+      ctx.error(err,'投票失败！');
+    }
 
     //user.vote_join_count++
-    ctx.model('user').findByIdAndUpdate(userId, {$inc: {vote_join_count: 1}});
+    await userModel.findByIdAndUpdate(userId, {$inc: {vote_join_count: 1}});
 
     //save relation 建立投票关系，不可重复投票
-    const relationModel = ctx.model('relation');
-    let relation = ctx.query;
-    relation.type = 'vote_join';
-    const relation = new relationModel(relation);
-    relation.save((err,relation) => {
-      if(err) ctx.error(err,'投票失败！');
-    });
-
-    ctx.success(null,'投票成功！');
+    let relation_q = {
+      userId: userId,
+      otherId: voteId,
+      extra: parseInt(itemIdx),
+      type: 'vote_join'
+    }
+    let relation = new relationModel(relation_q);
+    try {
+      await relation.save();
+    } catch(err) {
+      ctx.error(err,'投票失败！');
+    }
+    ctx.success(vote,'投票成功！');
   }
 
  /**
@@ -55,11 +70,13 @@ class VoteController {
   * @param {Object} vote
   */
   static async edit( ctx, next ){
-    let vote = ctx.model('vote').findById(ctx.body.vote._id);
+    let vote = voteModel.findById(ctx.body.vote._id);
     vote = ctx.body.vote;
-    vote.save((err,relation) => {
-      if(err) ctx.error(err,'投票修改失败！');
-    });
+    try {
+      await vote.save();
+    } catch(err) {
+      ctx.error(err,'投票修改失败！');
+    }
     ctx.success(null,'投票修改成功');
   }
 
@@ -69,29 +86,31 @@ class VoteController {
    * @param {String} userId
    */
   static async create( ctx, next ){
+    const { userId } = ctx.request.body;
     //save vote
-    const voteModel = ctx.model('vote');
-    let vote = new voteModel(ctx.body.vote);
-    vote = ctx.body.vote;
-    vote.userId = ctx.body.userId;
-    vote.save((err,vote) => {
-      if(err) ctx.error(err,'投票创建失败！');
-    });
+    let vote = new voteModel(ctx.request.body);
+    vote.user = userId;
+    try { await vote.save();
+    } catch(err) {
+      ctx.error(err,'投票创建失败！');
+    }
 
     //save relation
-    const relationModel = ctx.model('relation');
     const relation_new = {
       userId: userId,
-      voteId: voteId,
+      otherId: vote._id,
       type: 'vote_launch'
     };
-    const relation = new relationModel(relation_new);
-    relation.save((err,relation) => {
-      if(err) ctx.error(err,'投票创建失败！');
-    });
+    console.log(relation_new);
+    let relation = new relationModel(relation_new);
+    console.log(relation);
+    try { await relation.save();
+    } catch(err) {
+      ctx.error(err,'投票创建失败！');
+    }
 
     //user.vote_count++
-    ctx.model('user').findByIdAndUpdate(userId, {$inc: {vote_join_count: 1}});
+    userModel.findByIdAndUpdate(userId, {$inc: {vote_join_count: 1}});
 
     ctx.success(null, '投票创建成功！');
   }
@@ -103,18 +122,19 @@ class VoteController {
    */
   static async detail( ctx, next ){
     //标志是否已投票过
-    let is_voted = await ctx.model('relation')
-                              .findOne({voteId: ctx.params.voteId},
-                                {userId: ctx.params.userId});
-    is_voted = is_voted ? is_voted.itemIdx : -1;
+    const { voteId } = ctx.params;
+    const userId = '58fc03c2b78b45f01353b04f';
+    let is_voted = await relationModel
+                          .findOne({otherId: voteId, userId: userId});
+    is_voted = !is_voted ? -1 : is_voted.extra;
     //detail
-    let votedetail = await ctx.model('vote').findById(voteId);
-    //vote.view++
-    votedetail.view ++;
+    let votedetail = await voteModel.detail(voteId);
+    //vote.view++               
+    votedetail.view ++;                                        
     votedetail.save((err,vote) => {
       if(err) ctx.error(err,'vote浏览数增加失败！');
     });
-    votedetail.is_voted = is_voted;
+    votedetail.is_voted = is_voted; 
     ctx.success(votedetail);
   }
 
@@ -124,34 +144,42 @@ class VoteController {
    * @param {String} userId
    */
   static async delete( ctx, next ){
-    const voteId = ctx.params.voteId;
+    const { userId, voteId } = ctx.params;
     //删除投票
-    ctx.model('vote').remove({_id: voteId},(err) => {
+    voteModel.remove({_id: voteId},(err) => {
       if(err) ctx.error(err,'投票删除失败！')
     });
 
     //user.vote_count --
-    ctx.model('user').findByIdAndUpdate(userId, 
+    userModel.findByIdAndUpdate(userId, 
       {$inc: {vote_count: -1}},
       (err) => {
           if(err) ctx.error(err,'user.vote_count-- 失败！')
     });   
     //user.vote_join_count --
-    const relation_list = await ctx.model('relation').find({voteId: voteId, type:'vote_join'});
+    const relation_list = await relationModel.find({voteId: voteId, type:'vote_join'});
     relation_list.map(userId => {
-      ctx.model('user').findByIdAndUpdate(userId, 
+      userModel.findByIdAndUpdate(userId, 
         {$inc: {vote_join_count: -1}},
         (err) => {
           if(err) ctx.error(err,'user.vote_join_count-- 失败！')
         }); 
     });
     //关系解除
-    ctx.model('relation').remove({voteId: voteId}, (err) => {
+    relationModel.remove({otherId: voteId}, (err) => {
       if(err) ctx.error(err,'关系解除失败！')
     });
 
     ctx.success(null, '投票删除成功！');
 
+  }
+
+  /**
+   * 获取所有topics
+   */
+  static async topics ( ctx, next ){
+    const topics = await topicModel.find();
+    ctx.success(topics);
   }
 
 

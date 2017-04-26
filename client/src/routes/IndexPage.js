@@ -1,24 +1,19 @@
 import React from 'react';
 import { connect } from 'dva';
-import styles from './IndexPage.css';
-import { Carousel, Button, Icon, Row, Col, Card } from 'antd';
+import { Carousel, Button, Icon, Row, Col } from 'antd';
 import MainLayout from '../components/MainLayout/MainLayout';
 import ArticalItem from '../components/Home/ArticalItem';
-import PropTypes from 'prop-types';
 
-function IndexPage({ location, posts }) {
-  const label_arr = ['教育','运动健身','文学','编程','运动','健身','文学','编程'];
+const ButtonGroup = Button.Group;
+
+function IndexPage({ location, posts, loading }) {
+  const labelArr = ['教育', '运动健身', '文学', '编程', '运动', '健身', '文学', '编程'];
   const article = [];
-  posts.map((post, i) => {
+  posts.forEach((post, i) => {
     article.push(
-      <ArticalItem key={i} post={post}></ArticalItem>
-    )
-  })
-  // for(let i=0; i< 5; i++){
-  //   article.push(
-  //     <ArticalItem key={i}></ArticalItem>
-  //   )
-  // }
+      <ArticalItem key={i} post={post} loading={loading} />,
+    );
+  });
   return (
     <MainLayout location={location}>
       <Carousel autoplay>
@@ -28,34 +23,40 @@ function IndexPage({ location, posts }) {
         <div><h3>4</h3></div>
       </Carousel>
 
-      <Row type="flex" justify="space-around" style={{ margin:'20px'}}>
+      <Row type="flex" justify="space-around" style={{ margin: '20px' }}>
         {
-          label_arr.map((item, index) => {
-            return(
-              <Col style={{ margin: '5px 0', textAlign:'center'}} key={index+item}>
+          labelArr.map((item, index) => {
+            return (
+              <Col style={{ margin: '5px 0', textAlign: 'center' }} key={index + item}>
                 <Button type="primary">
                   <Icon type="left" />{item}
                 </Button>
               </Col>
-            )
+            );
           })
         }
+      </Row>
+      <Row type="flex" justify="space-around" style={{ margin: '20px' }}>
+        <ButtonGroup>
+          <Button type="primary" icon="cloud" ghost >最新</Button>
+          <Button type="primary" icon="cloud-download" ghost >最热</Button>
+        </ButtonGroup>
       </Row>
 
       <div className="article-content">
         {article}
       </div>
-      
     </MainLayout>
   );
 }
 
 IndexPage.propTypes = {
-  //text: PropTypes.string.isRequired,
+  // text: PropTypes.string.isRequired,
 };
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
+    loading: state.loading.models.vote,
     posts: state.vote.posts,
   };
 }

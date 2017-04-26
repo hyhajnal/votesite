@@ -1,11 +1,9 @@
 
 import mongoose from 'mongoose';
-import url from 'url';
-import path from 'path';
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
-const UserSchema = new Schema({
+const userSchema = new Schema({
   _id: ObjectId ,
   name: String ,
   psd: String ,
@@ -20,10 +18,9 @@ const UserSchema = new Schema({
   reply_count_new: Number //新增回复（包括在发起／参与的投票）
 });
 
-// UserSchema.methods.find = async () => {
+// userSchema.methods.find = async () => {
 //   let userlist = await this.findOne();
 //   return userlist;
 // }
 
-//export default mongoose.model('User', UserSchema);
-export default UserSchema;
+export default mongoose.model('User', userSchema);

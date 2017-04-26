@@ -2,8 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema; 
 const ObjectId = Schema.ObjectId;
 
-const VoteSchema = new Schema({
-  _id: ObjectId,
+const voteSchema = new Schema({
   title: String,
   desc: String,
   create_time: Date,
@@ -12,29 +11,36 @@ const VoteSchema = new Schema({
   view: Number, 
   msg: Number,
   follow: Number,
-  user: {type: ObjectId, ref: 'user'}, //发起人
+  is_voted: Number,
+  user: {type: ObjectId, ref: 'User'}, //发起人
   complex: Boolean, //两种布局：带图片／纯文字
-  votelist:[{
-    num: Number,
-    title: String,
-    desc: String,
-    pic: String
-  }],
-  comments: {type: ObjectId, ref: 'comment'}
+  votelist: Array,
+  comments: [{type: ObjectId, ref: 'Comment'}]
 });
 
 //查询vote详情
-VoteSchema.methods.detail = async (voteId) => {
+voteSchema.statics.detail = async function(voteId){
   const vote = await this
-                      .findById({ _id: voteId })
-                      .populate('user')
-                      .populate({
-                        path: 'comment',
-                        populate: { path: 'childs' }
-                      });
+    .findById(voteId)
+    .populate('user')
+    .populate({
+      path: 'comments',
+      populate: { 
+        path: 'childs',
+        populate: [{
+          path: 'from',
+          model: 'User'
+        },{
+          path: 'to',
+          model: 'User'
+        }]
+      }
+    })
+    .populate({
+      path: 'comments',
+      populate: [{ path: 'from' },{ path: 'to' }]
+    })
   return vote;
 }
 
-//id = new mongoose.Schame.ObjectId()
-
-export default VoteSchema;
+export default mongoose.model('Vote', voteSchema);

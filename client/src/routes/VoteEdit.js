@@ -4,12 +4,12 @@ import styles from './VoteEdit.css';
 import MainLayout from '../components/MainLayout/MainLayout';
 import VoteForm from '../components/Vote/Vote';
 
-function VoteEdit({ lacation }) {
+function VoteEdit({ location }) {
   return (
-  	<MainLayout location={ location }>
-	    <div className={styles.normal}>
-	      <VoteForm></VoteForm>
-	    </div>
+    <MainLayout location={location}>
+      <div className={styles.normal}>
+        <VoteForm />
+      </div>
     </MainLayout>
   );
 }

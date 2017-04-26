@@ -1,8 +1,11 @@
 .card{
-	border-bottom: 1px solid #ccc; 
+	margin-bottom: 10px; 
 }
 .card:last-child{
-	border-bottom: none; 
+	margin-bottom: 80px;
+}
+.card:hover{
+	cursor: pointer;
 }
 
 .fenlei{

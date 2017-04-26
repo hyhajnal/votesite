@@ -6,11 +6,11 @@ import MainLayout from '../components/MainLayout/MainLayout';
 
 function Users({ location }) {
   return (
-  	<MainLayout location={location}>
-	    <div className={styles.normal}>
-	      <UsersComponent />
-	    </div>
-	</MainLayout>
+    <MainLayout location={location}>
+      <div className={styles.normal}>
+        <UsersComponent />
+      </div>
+    </MainLayout>
   );
 }
 

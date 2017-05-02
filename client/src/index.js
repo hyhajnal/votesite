@@ -10,7 +10,7 @@ app.use(createLoading());
 
 // 3. Model
 // model的state 构成全局的state
-app.model(require('./models/users'));
+app.model(require('./models/user'));
 
 app.model(require('./models/vote'));
 

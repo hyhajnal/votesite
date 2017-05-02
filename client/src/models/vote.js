@@ -6,6 +6,7 @@ export default {
   state: {
     posts: [],
     vote: {},
+    topics: [],
   },
   reducers: {
     save(state, { payload: { data: posts } }) {
@@ -14,25 +15,26 @@ export default {
     save_vote(state, { payload: { data: vote } }) {
       return { ...state, vote };
     },
+    save_topics(state, { payload: topics }) {
+      return { ...state, topics };
+    },
   },
   effects: {
-    *fetch_list({ call, put }) {
-      let { data } = yield call(voteService.fetch);
-      data = data.data;
+    *fetch_list(action, { call, put }) {
+      const { data } = yield call(voteService.fetchList);
       yield put({
         type: 'save',
         payload: {
-          data,
+          data: data.data,
         },
       });
     },
     *fetch_vote({ payload: _id }, { call, put }) {
-      let { data } = yield call(voteService.fetchVote, _id);
-      data = data.data;
+      const { data } = yield call(voteService.fetchVote, _id);
       yield put({
         type: 'save_vote',
         payload: {
-          data,
+          data: data.data,
         },
       });
     },
@@ -40,9 +42,17 @@ export default {
       yield call(voteService.toVote, { voteId, idx });
       yield put({ type: 'fetch_vote', payload: voteId });
     },
-    *to_comment({ payload: { comment, pid, voteId } }, { call, put }) {
-      yield call(voteService, { comment, pid });
+    *to_comment({ payload: { comment } }, { call, put }) {
+      yield call(voteService.toComment, comment);
+      yield put({ type: 'fetch_vote', payload: comment.voteId });
+    },
+    *delete_comment({ payload: { comment, voteId } }, { call, put }) {
+      yield call(voteService.delComment, comment._id, comment.pid);
       yield put({ type: 'fetch_vote', payload: voteId });
+    },
+    *fetch_topics(action, { call, put }) {
+      const { data } = yield call(voteService.fetchTopics);
+      yield put({ type: 'save_topics', payload: data.data });
     },
   },
   subscriptions: {
@@ -50,12 +60,16 @@ export default {
       return history.listen(({ pathname, query }) => {
         if (pathname === '/') {
           dispatch({ type: 'fetch_list' });
+          dispatch({ type: 'fetch_topics' });
         }
         if (pathname === '/vote') {
           dispatch({
             type: 'fetch_vote',
             payload: query._id,
           });
+        }
+        if (pathname === '/voteEdit') {
+          dispatch({ type: 'fetch_topics' });
         }
       });
     },

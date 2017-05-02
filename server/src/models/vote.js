@@ -5,7 +5,8 @@ const ObjectId = Schema.ObjectId;
 const voteSchema = new Schema({
   title: String,
   desc: String,
-  create_time: Date,
+  create_time: Date, // 投票创建日期
+  end_time: Date,   // 投票截止日期
   active_time: Date,
   tag: String,   
   view: Number, 
@@ -14,7 +15,9 @@ const voteSchema = new Schema({
   is_voted: Number,
   user: {type: ObjectId, ref: 'User'}, //发起人
   complex: Boolean, //两种布局：带图片／纯文字
-  votelist: Array,
+  round: {type: Number, default: 1}, // 当前进行至第几轮投票了
+  multi: Number, //多轮投票（此轮投票需要选出前几名）－1单轮投票（不排名仅做展示）
+  votelist: Array, // 多轮投票，票数加一个字段
   comments: [{type: ObjectId, ref: 'Comment'}]
 });
 

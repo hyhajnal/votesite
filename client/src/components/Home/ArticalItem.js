@@ -47,7 +47,7 @@ class ArticalItem extends Component {
             <Icon className="gutter-h" type="message" />{ post.msg }
           </span>
           <span className={styles.footlabel}>
-            <Icon className="gutter-h" type="star-o" />{ post.follow }
+            <Icon className="gutter-h" type="heart-o" />{ post.follow }
           </span>
         </div>
       </Card>

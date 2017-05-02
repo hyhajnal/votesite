@@ -4,26 +4,26 @@ import { Menu, Icon, Button, Row, Col, Input } from 'antd';
 import { Link } from 'dva/router';
 import styles from './Header.css';
 
-function Header({ collapsedCls, location }) {
+function Header({ collapsedCls, location, user }) {
   const headCls = classNames(styles.header, collapsedCls);
   const Search = Input.Search;
   return (
     <div className={headCls} id="header">
       <Row type="flex" justify="center" align="middle">
-        <Col span={8}>
+        <Col span={4} offset={2}>
           <Menu
             selectedKeys={[location.pathname]}
             mode="horizontal"
             theme="drak"
           >
-            <Menu.Item key="/users">
+            {/* <Menu.Item key="/users">
               <Link to="/users"><Icon type="bars" />Users</Link>
-            </Menu.Item>
+            </Menu.Item>*/}
             <Menu.Item key="/">
               <Link to="/"><Icon type="home" />首页</Link>
             </Menu.Item>
-            <Menu.Item key="/vote">
-              <Link to="/vote"><Icon type="bar-chart" />话题投票</Link>
+            <Menu.Item key="/about">
+              <Link to="/about"><Icon type="smail-o" />关于</Link>
             </Menu.Item>
           </Menu>
         </Col>
@@ -35,8 +35,10 @@ function Header({ collapsedCls, location }) {
           />
         </Col>
         <Col span={6}>
-          <Link to="voteEdit"><Button type="danger gutter-h-m">发起投票</Button></Link>
+          <Link to="voteEdit"><Button type="danger gutter-h-m" ghost >发起投票</Button></Link>
+          { user.name ? `你好，${user.name}` :
           <Link to="login"><Button type="primary gutter-h-m">登录</Button></Link>
+          }
         </Col>
       </Row>
     </div>

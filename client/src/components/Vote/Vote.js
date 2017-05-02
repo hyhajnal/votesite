@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import {
   Form, Select, Radio,
-  Button, Upload, Icon, Input, DatePicker,
-  Row } from 'antd';
+  Button, Icon, Input, DatePicker,
+  InputNumber, Row } from 'antd';
+
+import VoteItem from './VoteItem';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -13,6 +15,18 @@ const RangePicker = DatePicker.RangePicker;
 
 let uuid = 0;
 class Vote extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      multi: -1,
+    };
+  }
+
+  changeMulti = (e) => {
+    this.setState({ multi: e.target.value });
+  }
+
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -33,6 +47,7 @@ class Vote extends Component {
     const { form } = this.props;
     // can use data-binding to get
     const keys = form.getFieldValue('keys');
+    console.log(keys);
     // We need at least one passenger
     if (keys.length === 1) {
       return;
@@ -47,18 +62,41 @@ class Vote extends Component {
   add = () => {
     uuid += 1;
     const { form } = this.props;
-    // can use data-binding to get
     const keys = form.getFieldValue('keys');
     const nextKeys = keys.concat(uuid);
-    // can use data-binding to set
-    // important! notify form to detect changes
     form.setFieldsValue({
       keys: nextKeys,
     });
   }
 
+  swapItems = (arr, index1, index2) => {
+    const item1 = arr[index1];
+    arr[index1] = arr[index2];
+    arr[index2] = item1;
+    return arr;
+  }
+
+  toup = (k) => {
+    const { form } = this.props;
+    const keys = form.getFieldValue('keys');
+
+    form.setFieldsValue({
+      keys: this.swapItems(keys, k - 1, k - 2),
+    });
+  }
+
+  todown = (k) => {
+    const { form } = this.props;
+    const keys = form.getFieldValue('keys');
+
+    form.setFieldsValue({
+      keys: this.swapItems(keys, k - 1, k),
+    });
+  }
+
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { topics } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -67,77 +105,17 @@ class Vote extends Component {
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
 
-    console.log(keys);
+    const options = {
+      keys,
+      getFieldDecorator,
+      normFile: this.normFile,
+      remove: this.remove,
+      toup: this.toup,
+      todown: this.todown,
+    };
     const formItems = keys.map((k, index) => {
       return (
-
-        <div key={index}>
-          <FormItem
-            {...formItemLayout}
-            label={
-              <Button type="primary" ghost>选项{ index + 1 }</Button>
-            }
-          >
-            <Button
-              type="danger" shape="circle" icon="close"
-              size="small" className="gutter-h-m"
-              disabled={keys.length === 1}
-              onClick={() => this.remove(k)}
-            />
-            { index !== 0 ?
-              (<Button
-                type="primary" shape="circle" icon="arrow-up" ghost
-                size="small" className="gutter-h-m"
-              />)
-              : (null)
-            }
-            { keys.length === index + 1 ? null :
-              (<Button
-                type="primary" shape="circle" icon="arrow-down" ghost
-                size="small" className="gutter-h-m"
-              />)
-            }
-
-          </FormItem>
-
-          <FormItem
-            {...formItemLayout}
-            label="选项标题"
-            hasFeedback
-          >
-            {getFieldDecorator(`title${index}`, {
-              rules: [{ required: true, message: '请输入选项标题' }],
-            })(
-              <Input placeholder="请输入选项标题" />,
-            )}
-          </FormItem>
-
-          <FormItem
-            {...formItemLayout}
-            label="选项描述"
-            hasFeedback
-          >
-            {getFieldDecorator(`desc${index}`)(
-              <Input type="textarea" rows={4} placeholder="在此可对该选项进行描述" />,
-            )}
-          </FormItem>
-
-          <FormItem
-            {...formItemLayout}
-            label="图片上传"
-          >
-            {getFieldDecorator('upload', {
-              valuePropName: 'fileList',
-              getValueFromEvent: this.normFile,
-            })(
-              <Upload name={`pic${index}`} action="/upload.do" listType="picture">
-                <Button>
-                  <Icon type="upload" /> 点击上传
-                </Button>
-              </Upload>,
-            )}
-          </FormItem>
-        </div>
+        <VoteItem options={options} k={k} index={index} key={k} />
       );
     });
 
@@ -149,7 +127,7 @@ class Vote extends Component {
           label="话题标题"
           hasFeedback
         >
-          {getFieldDecorator('userName', {
+          {getFieldDecorator('title', {
             rules: [{ required: true, message: '给个标题吧！' }],
           })(
             <Input placeholder="给个投票标题吧！" />,
@@ -158,17 +136,27 @@ class Vote extends Component {
 
         <FormItem
           {...formItemLayout}
+          label="投票描述"
+          hasFeedback
+        >
+          {getFieldDecorator('desc')(
+            <Input placeholder="几句话简单描述一下这个投票！" />,
+          )}
+        </FormItem>
+
+        <FormItem
+          {...formItemLayout}
           label="话题标签"
         >
-          {getFieldDecorator('select-multiple', {
+          {getFieldDecorator('tag', {
             rules: [
-              { required: true, message: '请选择一个或多个话题', type: 'array' },
+              { required: true, message: '请选择一个或多个话题' },
             ],
           })(
-            <Select mode="multiple" placeholder="投票属于下列哪个话题呢？">
-              <Option value="red">体育</Option>
-              <Option value="green">文学</Option>
-              <Option value="blue">健身</Option>
+            <Select placeholder="投票属于下列哪个话题呢？">
+              { topics.map((topic, i) =>
+                <Option value={topic._id} key={i}>{ topic.name }</Option>,
+              ) }
             </Select>,
           )}
         </FormItem>
@@ -177,7 +165,7 @@ class Vote extends Component {
           {...formItemLayout}
           label="投票时间"
         >
-          {getFieldDecorator('range-time-picker', {
+          {getFieldDecorator('create_time', {
             rules: [{ type: 'array', required: true, message: '请选择投票时间!' }],
           })(
             <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />,
@@ -188,16 +176,20 @@ class Vote extends Component {
           {...formItemLayout}
           label="投票类型"
         >
-          {getFieldDecorator('radio-button', {
+          {getFieldDecorator('mluti', {
             rules: [
-              { required: true, message: '请选择投票类型!' },
+              { required: true, message: '请选择!' },
             ],
           })(
-            <RadioGroup>
-              <RadioButton value="a">单选</RadioButton>
-              <RadioButton value="b">多选</RadioButton>
+            <RadioGroup onChange={this.changeMulti}>
+              <RadioButton value={-1} >不限制结果数量</RadioButton>
+              <RadioButton value={1} >限制结果数量</RadioButton>
             </RadioGroup>,
           )}
+          {
+            this.state.multi === -1 ? null :
+            <InputNumber min={1} max={10} defaultValue={1} style={{ marginLeft: '10px' }} />
+          }
         </FormItem>
 
         {formItems}

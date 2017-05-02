@@ -3,7 +3,10 @@
 */
 
 import utility from 'utility';
-import cryptoHelp from 'crypto';
+import cryptoHelp from 'crypto'; 
+import userModel from '../models/user';
+import voteModel from '../models/vote';
+import commentModel from '../models/comment';
 
 class UserController {
   
@@ -12,8 +15,8 @@ class UserController {
    * @param {String} userId
    */
   static async info( ctx, next ){
-    const userId = ctx.params.userId;
-    const user = await ctx.model('user').findBtId(userId);
+    const userId = '58fc03c2b78b45f01353b054';
+    const user = await userModel.findById(userId);
     ctx.success(user);
   }
   
@@ -22,8 +25,8 @@ class UserController {
    * @param {Object} user
    */
   static async edit( ctx, next ){
-    let user = await ctx.model('user').findBtId(userId);
-    user = ctx.body.user;
+    let user = await userModel.findById('58fc03c2b78b45f01353b054');
+    user = ctx.request.body.user;
     user.save((err) => {
       if(err) ctx.error(err,'修改失败');
     })
@@ -35,8 +38,8 @@ class UserController {
    * @param {String} userId
    */
   static async vote(ctx){
-    const userId = ctx.params.userId;
-    const votelist = await ctx.model('vote').find({user: userId});
+    const userId = '58fc03c2b78b45f01353b054';
+    const votelist = await voteModel.find({user: userId});
     ctx.success(votelist);
   }
 
@@ -45,10 +48,20 @@ class UserController {
    * @param {String} userId
    */
   static async reply(ctx){
-
+    const userId = '58fc03c2b78b45f01353b054';
+    const commentlist = await commentModel.find({to: userId});
+    ctx.success(commentlist);
   }
 
   static async login(ctx){
+    const c_user = ctx.request.body;
+    //const c_psd = await cryptoHelp.decipher('aes-256-cbc', key, c_user.psd);
+    const user = await userModel.find({name: c_user.name});
+    if( user.psd === c_user.psd){
+      ctx.success(user, '登录成功！');
+    }else{
+      ctx.error('登录失败！');
+    }
 
   }
 
@@ -57,10 +70,12 @@ class UserController {
    * @param {Object} user
    */
   static async register(ctx){
-    const userModel = ctx.model('user');
-    let new_user = ctx.body.user;
-    new_user.psd = await cryptoHelp.cipher('aes-256-cbc', key, new_user.psd);
+    let new_user = ctx.request.body.user;
+    //new_user.psd = await cryptoHelp.cipher('aes-256-cbc', key, new_user.psd);
     const user = new userModel(new_user);
+    user.save((err) => {
+      if(err) ctx.error("注册失败！");
+    });
     ctx.success(user);
   }
 

@@ -1,11 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
 import { connect } from 'dva';
-import { Row, Col, Card, Button, Modal, Icon } from 'antd';
+import { Row, Col, Card, Button, Modal, Icon, Spin } from 'antd';
 import styles from './Vote.css';
 import MainLayout from '../components/MainLayout/MainLayout';
 import Comment from '../components/Comment/Comment';
-import Spinner from '../components/Common/Spinner';
 
 
 const confirm = Modal.confirm;
@@ -54,14 +53,14 @@ function showConfirm(dispatch, vote, idx, voteId) {
   });
 }
 
-function Vote({ location, vote, dispatch, loading }) {
+function Vote({ location, vote, dispatch, loading, user }) {
   if (!vote.title) return null;
-  const { votelist, comments, isVoted } = vote;
+  const { votelist, comments, is_voted } = vote;
   const time = vote.create_time;
-  const voteList = votelist ? createVoteList(votelist, isVoted, dispatch, vote._id) : null;
+  const voteList = votelist ? createVoteList(votelist, is_voted, dispatch, vote._id) : null;
   return (
     <MainLayout location={location}>
-      <Spinner loading={loading} />
+      <Spin spinning={loading} />
       <div style={{ background: '#fff', padding: '30px' }}>
         <Row type="flex" justify="start">
           <Col>
@@ -86,10 +85,12 @@ function Vote({ location, vote, dispatch, loading }) {
 
       <div style={{ background: '#fff', padding: '30px' }}>
         {
-          !comments ? null :
-          comments.forEach((comment, index) =>
-            <Comment comment={comment} key={index} top={index === 0} />,
-          )
+          comments.length > 0 ?
+          comments.map((comment, i) =>
+            <Comment
+              comment={comment} key={i} top={i === 0}
+              userId={user._id} voteId={vote._id} dispatch={dispatch}
+            />) : null
         }
       </div>
     </MainLayout>
@@ -99,6 +100,7 @@ function Vote({ location, vote, dispatch, loading }) {
 function mapStateToProps(state) {
   return {
     vote: state.vote.vote,
+    user: state.user.user,
     loading: state.loading.models.vote,
   };
 }

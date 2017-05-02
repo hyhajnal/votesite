@@ -2,9 +2,9 @@
 export default async ( ctx, next ) => {
   ctx.error = (err, msg, status, data) => {
     //ctx.throw([msg], [status], [properties])
-    throw new Error(err);
     ctx.status = status || 400;
     ctx.body = { success: 0, data, msg };
+    throw new Error(err);
   }
 
   ctx.success = (data, msg) => {

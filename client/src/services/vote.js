@@ -2,12 +2,16 @@ import request from '../utils/request';
 
 // Vote
 
-export function fetch() {
+export function fetchList() {
   return request('/api/vote/list');
 }
 
 export function fetchVote(_id) {
   return request(`/api/vote/detail/${_id}`);
+}
+
+export function fetchTopics() {
+  return request('/api/vote/topics');
 }
 
 export function toVote({ voteId, idx }) {
@@ -33,9 +37,12 @@ export function editVote({ vote }) {
 
 // Comment
 
-export function toComment({ comment, pid }) {
-  return request(`/api/comment/create/${pid}`, {
+export function toComment(comment) {
+  return request('/api/comment/create', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(comment),
   });
 }
@@ -44,8 +51,8 @@ export function toStar(commentId) {
   return request(`/api/comment/star/${commentId}`);
 }
 
-export function delComment(commentId) {
-  return request(`/api/comment/delete/${commentId}`, {
+export function delComment(commentId, pid) {
+  return request(`/api/comment/delete/${commentId}/${pid}`, {
     method: 'DELETE',
   });
 }

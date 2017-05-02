@@ -14,10 +14,6 @@ db.once('open', () => {
   console.log('db connect!');
 });
 
-// const userModel    = db.model('user',userSchema),
-//       commentModel = db.model('comment', commentSchema),
-//       voteModel    = db.model('vote',voteSchema);
-
 const random_num = (min, max) => {
   return parseInt(Math.random()*(max-min+1)+min,10)
 }
@@ -35,11 +31,16 @@ const commentfn = async () => {
     comment.voteId = random_objectId(votelist);
     comment.from = random_objectId(userlist);
     comment.to = random_objectId(userlist);
-    comment.childs.push(random_objectId(childlist));
+    const childId = random_objectId(childlist);
+    comment.childs.push(childId);
     comment.save((err) => {
       if(err) console.log(err);
-    })
-  })
+    });
+    commentModel.findByIdAndUpdate(childId,
+      { $set: { pid: comment._id }}, (err) => {
+      if(err) console.log(err);
+    });
+  });
 }
 
 const votefn = async () => {

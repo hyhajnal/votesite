@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Carousel, Button, Icon, Row, Col } from 'antd';
+import { Carousel, Button, Row, Col } from 'antd';
 import MainLayout from '../components/MainLayout/MainLayout';
 import ArticalItem from '../components/Home/ArticalItem';
+import styles from './IndexPage.less';
 
 const ButtonGroup = Button.Group;
 
-function IndexPage({ location, posts, loading }) {
-  const labelArr = ['教育', '运动健身', '文学', '编程', '运动', '健身', '文学', '编程'];
+function IndexPage({ location, posts, loading, topics }) {
   const article = [];
   posts.forEach((post, i) => {
     article.push(
@@ -23,27 +23,25 @@ function IndexPage({ location, posts, loading }) {
         <div><h3>4</h3></div>
       </Carousel>
 
-      <Row type="flex" justify="space-around" style={{ margin: '20px' }}>
-        {
-          labelArr.map((item, index) => {
-            return (
-              <Col style={{ margin: '5px 0', textAlign: 'center' }} key={index + item}>
-                <Button type="primary">
-                  <Icon type="left" />{item}
-                </Button>
-              </Col>
-            );
-          })
-        }
-      </Row>
-      <Row type="flex" justify="space-around" style={{ margin: '20px' }}>
-        <ButtonGroup>
-          <Button type="primary" icon="cloud" ghost >最新</Button>
-          <Button type="primary" icon="cloud-download" ghost >最热</Button>
-        </ButtonGroup>
-      </Row>
-
       <div className="article-content">
+        <Row type="flex" align="start" style={{ margin: '20px' }}>
+          {
+            topics.map((item, index) => {
+              return (
+                <Col className={styles.topic} key={index + item} >
+                  <img src={item.pic} width="32" height="32" alt={item.name} />
+                  {item.name}&nbsp;&nbsp;{item.vote_count}
+                </Col>
+              );
+            })
+          }
+        </Row>
+        <Row type="flex" justify="space-around" style={{ margin: '20px' }}>
+          <ButtonGroup>
+            <Button type="primary" icon="cloud" ghost >最新</Button>
+            <Button type="primary" icon="cloud-download" ghost >最热</Button>
+          </ButtonGroup>
+        </Row>
         {article}
       </div>
     </MainLayout>
@@ -58,6 +56,7 @@ function mapStateToProps(state) {
   return {
     loading: state.loading.models.vote,
     posts: state.vote.posts,
+    topics: state.vote.topics,
   };
 }
 

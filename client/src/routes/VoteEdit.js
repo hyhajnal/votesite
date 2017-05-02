@@ -4,18 +4,20 @@ import styles from './VoteEdit.css';
 import MainLayout from '../components/MainLayout/MainLayout';
 import VoteForm from '../components/Vote/Vote';
 
-function VoteEdit({ location }) {
+function VoteEdit({ location, dispatch, topics }) {
   return (
     <MainLayout location={location}>
       <div className={styles.normal}>
-        <VoteForm />
+        <VoteForm topics={topics} dispatch={dispatch} />
       </div>
     </MainLayout>
   );
 }
 
-function mapStateToProps() {
-  return {};
+function mapStateToProps(state) {
+  return {
+    topics: state.vote.topics,
+  };
 }
 
 export default connect(mapStateToProps)(VoteEdit);

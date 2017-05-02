@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
+import { connect } from 'dva';
 import styles from './MainLayout.css';
 import Header from './Header';
-import SiderContent from './Side';
+import Sider from './Side';
 
 const { Content } = Layout;
 
@@ -25,25 +26,32 @@ class MainLayout extends Component {
   }
 
   render() {
-    const { children, location } = this.props;
+    const { children, location, user } = this.props;
     const collapsedCls = this.state.collapsed ? 'sider-close' : 'sider-show';
     return (
       <Layout className={`${styles.bg} ant-layout-has-sider`}>
         <Layout className={collapsedCls}>
-          <Header location={location} collapsedCls={collapsedCls} />
+          <Header location={location} collapsedCls={collapsedCls} user={user} />
           <Content className="content">
             { children }
           </Content>
         </Layout>
-        <SiderContent
+        <Sider
           className={styles.sider}
           onCollapse={this.onCollapse}
           mode={this.state.mode}
           collapsed={this.state.collapsed}
+          user={user}
         />
       </Layout>
     );
   }
 }
 
-export default MainLayout;
+function mapStateToProps(state) {
+  return {
+    user: state.user.user,
+  };
+}
+
+export default connect(mapStateToProps)(MainLayout);

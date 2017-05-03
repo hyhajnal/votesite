@@ -2,8 +2,8 @@ import request from '../utils/request';
 
 // Vote
 
-export function fetchList() {
-  return request('/api/vote/list');
+export function fetchList(query) {
+  return request(`/api/vote/list${query}`);
 }
 
 export function fetchVote(_id) {

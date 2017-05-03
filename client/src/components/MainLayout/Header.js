@@ -10,7 +10,7 @@ function Header({ collapsedCls, location, user }) {
   return (
     <div className={headCls} id="header">
       <Row type="flex" justify="center" align="middle">
-        <Col span={4} offset={2}>
+        <Col span={8}>
           <Menu
             selectedKeys={[location.pathname]}
             mode="horizontal"
@@ -25,16 +25,22 @@ function Header({ collapsedCls, location, user }) {
             <Menu.Item key="/about">
               <Link to="/about"><Icon type="smail-o" />关于</Link>
             </Menu.Item>
+            <Menu.Item key="/me">
+              <Link to="/me/1"><Icon type="smail-o" />我</Link>
+            </Menu.Item>
+            <Menu.Item key="/other">
+              <Link to="/other"><Icon type="smail-o" />他</Link>
+            </Menu.Item>
           </Menu>
         </Col>
-        <Col span={10}>
+        <Col span={8}>
           <Search
             placeholder="输入你想到的关键词"
             style={{ width: '80%' }}
             onSearch={value => console.log(value)}
           />
         </Col>
-        <Col span={6}>
+        <Col span={8}>
           <Link to="voteEdit"><Button type="danger gutter-h-m" ghost >发起投票</Button></Link>
           { user.name ? `你好，${user.name}` :
           <Link to="login"><Button type="primary gutter-h-m">登录</Button></Link>

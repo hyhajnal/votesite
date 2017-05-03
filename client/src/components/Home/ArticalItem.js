@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Icon, Card } from 'antd';
-import { hashHistory } from 'dva/router';
+import { browserHistory } from 'dva/router';
 import styles from './ArticalItem.css';
 
 
 class ArticalItem extends Component {
 
   redirect = (_id) => {
-    hashHistory.push({
+    browserHistory.push({
       pathname: '/vote',
       query: { _id },
       //state: { fromDashboard: true }

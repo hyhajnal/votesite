@@ -20,8 +20,9 @@ export default {
     },
   },
   effects: {
-    *fetch_list(action, { call, put }) {
-      const { data } = yield call(voteService.fetchList);
+    *fetch_list({ payload }, { call, put }) {
+      payload = !payload ? '' : payload;
+      const { data } = yield call(voteService.fetchList, payload);
       yield put({
         type: 'save',
         payload: {

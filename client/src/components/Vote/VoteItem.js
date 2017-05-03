@@ -47,7 +47,7 @@ function VoteItem({ index, k, options }) {
         label="选项标题"
         hasFeedback
       >
-        {getFieldDecorator(`title-${k}`, {
+        {getFieldDecorator(`title-${index}`, {
           rules: [{ required: true, message: '请输入选项标题' }],
         })(
           <Input placeholder="请输入选项标题" />,
@@ -59,7 +59,7 @@ function VoteItem({ index, k, options }) {
         label="选项描述"
         hasFeedback
       >
-        {getFieldDecorator(`desc-${k}`)(
+        {getFieldDecorator(`desc-${index}`)(
           <Input type="textarea" rows={4} placeholder="在此可对该选项进行描述" />,
         )}
       </FormItem>
@@ -68,7 +68,7 @@ function VoteItem({ index, k, options }) {
         {...formItemLayout}
         label="图片上传"
       >
-        {getFieldDecorator(`pic-${k}`, {
+        {getFieldDecorator(`pic-${index}`, {
           valuePropName: 'fileList',
           getValueFromEvent: normFile,
         })(

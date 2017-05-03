@@ -142,23 +142,21 @@ class Comment extends Component {
             </Row>}
         >
           <div className="gutter-v">
-            <section>
-              { brother && brother.length > 0 ?
-                (<p>
-                  <a href="">{comment.from.name}</a>
-                  回复
-                  <a href="">{comment.to.name}</a>：
-                  {comment.content}
-                  <p className={styles.del}>
-                    {comment.from._id === userId ?
-                      <span onClick={() => this.handleDelete(dispatch, comment, voteId)}>删除</span>
-                      : null}
-                  </p>
+            { brother && brother.length > 0 ?
+              (<section>
+                <a href="">{comment.from.name}</a>
+                回复
+                <a href="">{comment.to.name}</a>：
+                {comment.content}
+                <p className={styles.del}>
+                  {comment.from._id === userId ?
+                    <span onClick={() => this.handleDelete(dispatch, comment, voteId)}>删除</span>
+                    : null}
                 </p>
-                )
-                : comment.content
-              }
-            </section>
+              </section>
+              )
+              : comment.content
+            }
           </div>
           {
             brother && brother.length > 0 ? null :

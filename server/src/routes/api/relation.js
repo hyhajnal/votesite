@@ -3,6 +3,7 @@ const router = new Router();
 import relationController from '../../controller/relation';
 
 router
+  .get('/all', relationController.all) // 查询用户所有的资料
   .get('/following', relationController.following) //关注的用户
   .get('/follower', relationController.follower) //粉丝
   //.get('/topic', relationController.topic) //关注的话题

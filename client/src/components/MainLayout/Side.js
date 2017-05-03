@@ -39,11 +39,13 @@ function Side({ collapsed, onCollapse, mode, user }) {
             <Menu.Item key="5"><Link to="/me/5">参与的投票<span className="label-2 gutter-h">{user.vote_count}</span></Link></Menu.Item>
             <Menu.Item key="6"><Link to="/me/6">发起的投票<span className="label-2 gutter-h">{user.vote_join_count}</span></Link></Menu.Item>
           </SubMenu>
-          <Menu.Item key="7">
-            <span><Icon type="message" />
-              <Link to="/me/7"><span className="nav-text">回复</span></Link>
-            </span>
-          </Menu.Item>
+          <SubMenu
+            key="sub3"
+            title={<span><Icon type="bar-chart" /><span className="nav-text">通知</span></span>}
+          >
+            <Menu.Item key="7"><Link to="/me/4">回复<span className="label-2 gutter-h">{user.reply_count}</span></Link></Menu.Item>
+            <Menu.Item key="8"><Link to="/me/5">消息<span className="label-2 gutter-h">{user.vote_count}</span></Link></Menu.Item>
+          </SubMenu>
         </Menu>
       </Sider>
     </div>

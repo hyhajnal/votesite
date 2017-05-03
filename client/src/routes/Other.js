@@ -10,22 +10,29 @@ import Message from '../components/Info/Message/Message';
 const TabPane = Tabs.TabPane;
 
 
-function Other({ location, topics, posts }) {
-  function callback(key) {
-    console.log(key);
-  }
-  const article = [];
-  posts.forEach((post, i) => {
-    article.push(
-      <ArticalItem key={i} post={post} loading={false} />,
-    );
-  });
-  const users = [];
-  for (let i = 0; i < 10; i += 1) {
-    users.push(
-      <Col span={8} key={i}><User /></Col>,
-    );
-  }
+function Other({ location, others }) {
+  if (others.votes === undefined) return null;
+  const { votes, followings, followers, topics, vote_joins, info } = others;
+
+  const posts = [];
+  const postsJoin = [];
+  votes.forEach((vote, i) =>
+    posts.push(<ArticalItem key={i} post={vote} loading={false} />),
+  );
+
+  vote_joins.forEach((vote, i) =>
+    postsJoin.push(<ArticalItem key={i} post={vote} loading={false} />),
+  );
+
+  const followingArray = [];
+  followings.forEach((following, i) =>
+    followingArray.push(<Col span={8} key={i}><User user={following} /></Col>),
+  );
+
+  const followerArray = [];
+  followers.forEach((follower, i) =>
+    followerArray.push(<Col span={8} key={i}><User user={follower} /></Col>),
+  );
 
   const msgs = [];
   for (let i = 0; i < 10; i += 1) {
@@ -37,24 +44,30 @@ function Other({ location, topics, posts }) {
   return (
     <MainLayout location={location}>
       <Row className={styles.info} span={20}>
-        <img alt="" src="https://upload-images.jianshu.io/upload_images/1980684-23785feb7da2370e.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/375/h/300" />
-        <h1>汤君</h1>
-        <p className={styles.desc}><em>这位童鞋很懒，暂时没有介绍哦</em></p>
+        <img alt="" src={info.avator} />
+        <h1>{info.name}</h1>
+        <p className={styles.desc}><em>
+          {
+            !info.desc ? '这位童鞋很懒，暂没介绍哦' : info.desc
+          }</em></p>
         <Row>
-          <Button type="primary" className="gutter-h-m">关注</Button>
+          {
+            !info.isfollow ? <Button type="primary" className="gutter-h-m">关注</Button>
+            : <Button type="primary" className="gutter-h-m" ghost >取关</Button>
+          }
           <Button type="primary" className="gutter-h-m">发消息</Button>
         </Row>
       </Row>
       <div className={styles.content}>
-        <Tabs defaultActiveKey="2" onChange={callback}>
+        <Tabs defaultActiveKey="2" >
           <TabPane tab="ta的粉丝" key="2">
             <Row gutter={24}>
-              {users}
+              {followerArray}
             </Row>
           </TabPane>
           <TabPane tab="ta关注的用户" key="3">
             <Row gutter={24}>
-              {users}
+              {followingArray}
             </Row>
           </TabPane>
           <TabPane tab="ta关注的话题" key="4">
@@ -71,8 +84,8 @@ function Other({ location, topics, posts }) {
               }
             </Row>
           </TabPane>
-          <TabPane tab="ta参与的投票" key="5">{article}</TabPane>
-          <TabPane tab="ta发起的投票" key="6">{article}</TabPane>
+          <TabPane tab="ta参与的投票" key="5">{posts}</TabPane>
+          <TabPane tab="ta发起的投票" key="6">{postsJoin}</TabPane>
           <TabPane tab="ta发布的评论" key="7">
             <ul>
               {msgs}
@@ -86,9 +99,8 @@ function Other({ location, topics, posts }) {
 
 function mapStateToProps(state) {
   return {
-    loading: state.loading.models.vote,
-    posts: state.vote.posts,
-    topics: state.vote.topics,
+    loading: state.loading.models.user,
+    others: state.user.all,
   };
 }
 

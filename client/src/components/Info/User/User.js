@@ -2,15 +2,19 @@ import React from 'react';
 import { Card, Col, Button } from 'antd';
 import styles from './User.less';
 
-function User() {
+function User({ user }) {
   return (
     <Card bodyStyle={{ padding: 0 }} className={styles.card}>
       <Col span={8} className={styles.imgbox} />
       <Col span={16} className={styles.text}>
-        <h3>汤君</h3>
-        <p className={styles.linemore}>这位童鞋很懒，暂时没有介绍哦</p>
-        <span>关注&nbsp;10&nbsp;&nbsp;|&nbsp;&nbsp;粉丝&nbsp;20</span>
-        <Button type="primary" size="small" className="gutter-h-m">关注</Button>
+        <h3>{user.name}</h3>
+        <p className={styles.linemore}>{user.desc}</p>
+        <span>关注&nbsp;{user.following_count}&nbsp;&nbsp;|</span>
+        <span>&nbsp;&nbsp;粉丝&nbsp;{user.follower_count}</span>
+        {
+            !user.isfollow ? <Button type="primary" className="gutter-h-m">关注</Button>
+            : <Button type="primary" className="gutter-h-m" ghost >取关</Button>
+        }
       </Col>
     </Card>
   );

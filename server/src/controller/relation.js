@@ -7,7 +7,7 @@ import topicModel from '../models/topic';
 class relationController {
 
   static async all(ctx, next){
-    const userId = '58fc03c2b78b45f01353b04f';
+    const userId = '58fc03c2b78b45f01353b057';
     console.log(ctx.query.otherId);
     const queryId = ctx.query.otherId ? ctx.query.otherId : userId;
     // 查询 info
@@ -66,13 +66,18 @@ class relationController {
       }
     };
 
+    // 查询评论
+    const comments = await commentModel.find({from: queryId}).populate(['from','to','voteId']);
+
+    // 查询未读消息
+
     await getFollowers();
     await getFollowings();
     await getTopics();
     await getVotejoins();
 
     const result = {
-      info, followings, followers, topics, votes, vote_joins
+      info, followings, followers, topics, votes, vote_joins, comments
     }
 
     ctx.success(result);
@@ -85,7 +90,7 @@ class relationController {
    */
   static async following(ctx, next){
     const userId = '58fc03c2b78b45f01353b057';
-    const list = await relationModel.find({userId: userId},{type:'user'});
+    const list = await relationModel.find({userId: userId, type:'user'});
     list.map(async (relation) => {
       relation.otherId = await userModel.findById(relation.otherId);
     });
@@ -94,27 +99,51 @@ class relationController {
 
   static async follower(ctx, next){
     const otherId = '58fc03c2b78b45f01353b057';
-    const list = await relationModel.find({otherId: otherId},{type:'user'});
+    const list = await relationModel.find({otherId: otherId, type:'user'});
     list.map(async (relation) => {
       relation.userId = await userModel.findById(relation.userId);
     });
     ctx.success(list);
   }
 
+  // 关注用户／关注话题 /点赞投票 ／点赞评论
   static async tofollow(ctx, next){
     console.log(ctx.request.body);
     let relation = new relationModel(ctx.request.body);
     await relation.save((err) => {
-      if(err) ctx.error(err, "关注失败！");
+      if(err) ctx.error(err, "操作失败！");
     });
-    ctx.success(null, "关注成功！");
+    
+    if (relation.type === 'user'){
+      await userModel.findByIdAndUpdate(relation.userId, {$inc: {following_count: 1}});
+      await userModel.findByIdAndUpdate(relation.otherId, {$inc: {follower_count: 1}});
+    }
+    if (relation.type === 'like'){
+      await voteModel.findByIdAndUpdate(relation.otherId, {$inc: {follow: 1}});
+    }
+    if (relation.type === 'comment'){
+      await commentModel.findByIdAndUpdate(relation.otherId, {$inc: {star: 1}});
+    }
+
+    ctx.success(null, "操作成功！");
   }
 
   static async unfollow(ctx, next){
-    await relationModel.remove(ctx.request.body, (err) => {
-      if(err) ctx.error(err, '取关失败！');
+    const relation = ctx.request.body;
+    await relationModel.remove(relation, (err) => {
+      if(err) ctx.error(err, '取消操作失败！');
     });
-    ctx.success(null, "取关成功！");
+    if (relation.type === 'user'){
+      await userModel.findByIdAndUpdate(relation.userId, {$inc: {following_count: -1}});
+      await userModel.findByIdAndUpdate(relation.otherId, {$inc: {follower_count: -1}});
+    }
+    if (relation.type === 'like'){
+      await voteModel.findByIdAndUpdate(relation.otherId, {$inc: {follow: -1}});
+    }
+    if (relation.type === 'comment'){
+      await commentModel.findByIdAndUpdate(relation.otherId, {$inc: {star: -1}});
+    }
+    ctx.success(null, "取消操作成功！");
   }
 }
 

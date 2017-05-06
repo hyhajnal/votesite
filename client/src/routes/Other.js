@@ -12,7 +12,7 @@ const TabPane = Tabs.TabPane;
 
 function Other({ location, others }) {
   if (others.votes === undefined) return null;
-  const { votes, followings, followers, topics, vote_joins, info } = others;
+  const { votes, followings, followers, topics, vote_joins, info, comments } = others;
 
   const posts = [];
   const postsJoin = [];
@@ -35,9 +35,9 @@ function Other({ location, others }) {
   );
 
   const msgs = [];
-  for (let i = 0; i < 10; i += 1) {
+  for (let i = 0; i < comments.length; i += 1) {
     msgs.push(
-      <Message key={i} />,
+      <Message key={i} msg={comments[i]} />,
     );
   }
 
@@ -60,17 +60,17 @@ function Other({ location, others }) {
       </Row>
       <div className={styles.content}>
         <Tabs defaultActiveKey="2" >
-          <TabPane tab="ta的粉丝" key="2">
+          <TabPane tab={`ta的粉丝 ${followerArray.length}`} key="2">
             <Row gutter={24}>
               {followerArray}
             </Row>
           </TabPane>
-          <TabPane tab="ta关注的用户" key="3">
+          <TabPane tab={`ta关注的用户 ${followingArray.length}`} key="3">
             <Row gutter={24}>
               {followingArray}
             </Row>
           </TabPane>
-          <TabPane tab="ta关注的话题" key="4">
+          <TabPane tab={`ta关注的话题 ${topics.length}`} key="4">
             <Row type="flex" align="start" style={{ margin: '20px' }}>
               {
                 topics.map((item, index) => {
@@ -84,9 +84,9 @@ function Other({ location, others }) {
               }
             </Row>
           </TabPane>
-          <TabPane tab="ta参与的投票" key="5">{posts}</TabPane>
-          <TabPane tab="ta发起的投票" key="6">{postsJoin}</TabPane>
-          <TabPane tab="ta发布的评论" key="7">
+          <TabPane tab={`ta发起的投票 ${posts.length}`} key="5">{posts}</TabPane>
+          <TabPane tab={`ta参与的投票 ${postsJoin.length}`} key="6">{postsJoin}</TabPane>
+          <TabPane tab={`ta发布的评论 ${msgs.length}`} key="7">
             <ul>
               {msgs}
             </ul>

@@ -43,11 +43,17 @@ function onChange1(e, dispatch) {
   });
 }
 
-function IndexPage({ location, posts, loading, topics, dispatch }) {
+function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
   const article = [];
   posts.forEach((post, i) => {
     article.push(
-      <ArticalItem key={i} post={post} loading={loading} />,
+      <ArticalItem
+        key={i}
+        post={post}
+        loading={loading}
+        userId={userId}
+        dispatch={dispatch}
+      />,
     );
   });
   return (
@@ -104,6 +110,7 @@ IndexPage.propTypes = {
 function mapStateToProps(state) {
   return {
     loading: state.loading.models.vote,
+    userId: state.user.user._id,
     posts: state.vote.posts,
     topics: state.vote.topics,
   };

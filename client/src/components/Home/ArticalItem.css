@@ -5,7 +5,7 @@
 .card:last-child{
 	margin-bottom: 80px;
 }
-.card:hover{
+.redirect:hover{
 	cursor: pointer;
 }
 

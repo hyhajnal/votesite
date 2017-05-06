@@ -1,6 +1,7 @@
 import { uniqWith as _uniqWith, isEqual as _isEqual } from 'lodash';
 import React, { Component } from 'react';
 import { Icon, Row, Col, Card, Input, Mention, Button, Modal } from 'antd';
+import { Link } from 'dva/router';
 import classnames from 'classnames';
 import styles from './Comment.less';
 
@@ -86,9 +87,22 @@ class Comment extends Component {
     });
   }
 
+  follow = (relation, dispatch) => {
+    dispatch({ type: 'user/tofollow', payload: { relation } });
+  }
+
+  unfollow = (relation, dispatch) => {
+    dispatch({ type: 'user/unfollow', payload: { relation } });
+  }
+
   render() {
     const { comment, top, brother, dispatch, userId, voteId } = this.props;
     const { open, suggestions } = this.state;
+    const relation = {
+      userId,
+      otherId: comment._id,
+      type: 'comment',
+    };
     if (brother) {
       mentionArray = [];
       brother.forEach((commentBrother) => {
@@ -124,7 +138,7 @@ class Comment extends Component {
                   className="avator-c" src={comment.from.avator}
                 />
                 <span className="label-1 gutter-h">
-                  {comment.from.name}
+                  <Link to={`/other?id=${comment.from._id}`}>{comment.from.name}</Link>
                 </span>
                 <span className="label-2">{ comment.time }</span>
               </Col>
@@ -144,9 +158,9 @@ class Comment extends Component {
           <div className="gutter-v">
             { brother && brother.length > 0 ?
               (<section>
-                <a href="">{comment.from.name}</a>
+                <Link to={`/other?id=${comment.from._id}`}>{comment.from.name}</Link>
                 回复
-                <a href="">{comment.to.name}</a>：
+                <Link to={`/other?id=${comment.from._id}`}>{comment.to.name}</Link>：
                 {comment.content}
                 <p className={styles.del}>
                   {comment.from._id === userId ?
@@ -165,7 +179,18 @@ class Comment extends Component {
                 <Icon className="gutter-h" type="message" onClick={e => this.handleExpand(e, comment.from)} />{comment.childs.length}
               </span>
               <span className={styles.footlabel}>
-                <Icon className="gutter-h" type="heart-o" />{comment.star}
+                comment.isfollow ?
+                <Icon
+                  className="gutter-h"
+                  type="heart"
+                  onClick={() => this.unfollow(relation, dispatch)}
+                /> :
+                <Icon
+                  className="gutter-h"
+                  type="heart-o"
+                  onClick={() => this.follow(relation, dispatch)}
+                />
+                {comment.star}
               </span>
             </Row>
 

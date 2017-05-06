@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { connect } from 'dva';
+import { Link } from 'dva/router';
 import { Row, Col, Card, Button, Modal, Icon, Spin } from 'antd';
 import styles from './Vote.css';
 import MainLayout from '../components/MainLayout/MainLayout';
@@ -71,7 +72,9 @@ function Vote({ location, vote, dispatch, loading, user }) {
               alt="example" width="30" height="30"
               className="avator-c" src={vote.user.avator}
             />
-            <span className="label-1 gutter-h">{ vote.user.name }</span>
+            <span className="label-1 gutter-h">
+              <Link to={`/other?id=${vote.user._id}`}>{ vote.user.name }</Link>
+            </span>
             <span className="label-2">{ time }</span>
           </Col>
         </Row>

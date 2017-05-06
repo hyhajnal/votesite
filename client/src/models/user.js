@@ -25,30 +25,25 @@ export default {
       yield put({ type: 'save', payload: { type: 'all', data: data.data } });
     },
     *tofollow({ payload: { relation } }, { call }) {
-      yield call(userService.tofolow, { relation });
+      yield call(userService.tofolow, relation);
     },
     *unfollow({ payload: { relation } }, { call }) {
-      yield call(userService.unfollow, { relation });
+      yield call(userService.unfollow, relation);
     },
   },
   subscriptions: {
     setup({ dispatch, history }) {
+      let markMe = 0;
       dispatch({ type: 'fetch', payload: { type: 'user' } });
-      history.listen(({ pathname }) => {
-        if (pathname === '/other') {
-          dispatch({ type: 'fetch_all', payload: '58fc03c2b78b45f01353b057' });
+      history.listen(({ pathname, query }) => {
+        if (pathname === '/other' && markMe !== query.id) {
+          dispatch({ type: 'fetch_all', payload: query.id });
+          markMe = query.id;
         }
-        if (pathname === '/following') {
-          dispatch({ type: 'fetch', payload: { type: 'following' } });
-        }
-        if (pathname === '/follower') {
-          dispatch({ type: 'fetch', payload: { type: 'follower' } });
-        }
-        if (pathname === '/vote_launch') {
-          dispatch({ type: 'fetch', payload: { type: 'vote_launch' } });
-        }
-        if (pathname === '/vote_join') {
-          dispatch({ type: 'fetch', payload: { type: 'vote_join' } });
+        const reg = new RegExp('/me/[1-8]');
+        if (reg.test(pathname) && markMe !== 1) {
+          dispatch({ type: 'fetch_all' });
+          markMe = 1;
         }
       });
     },

@@ -8,6 +8,6 @@ router
   .get('/follower', relationController.follower) //粉丝
   //.get('/topic', relationController.topic) //关注的话题
   .post('/tofollow', relationController.tofollow) //关注
-  .del('/unfollow', relationController.unfollow) //取关
+  .post('/unfollow', relationController.unfollow) //取关
 
   export default router;

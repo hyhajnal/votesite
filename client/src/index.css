@@ -29,6 +29,9 @@ html, body, :global(#root) {
 :global(.gutter-v-m){
 	margin:5px 0;
 }
+:global(.gutter-vl-m){
+	margin:20px 0;
+}
 
 :global(.gutter-h){
 	padding:0 5px;
@@ -36,6 +39,9 @@ html, body, :global(#root) {
 
 :global(.gutter-h-m){
 	margin:0 5px;
+}
+:global(.gutter-hl-m){
+	margin:0 20px;
 }
 
 :global(.label-1){

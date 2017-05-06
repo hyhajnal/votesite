@@ -14,6 +14,7 @@ class VoteController {
    * @param {Boolean} aesc 降序默认
    */
   static async list( ctx, next ){
+    const userId = '58fc03c2b78b45f01353b04f';
     let findkey = ctx.query.tag ? 
                   { tag: ctx.query.tag } : {};
     let sortkey = {};
@@ -24,7 +25,17 @@ class VoteController {
     }else{
       list = await voteModel.find(findkey).populate('user');
     }
-    ctx.success(list);
+    // 插入like字段
+    const votelist = [];
+    const getList = async ()=>{
+      for(let i=0,len=list.length;i<len;i++){
+        const relation = await relationModel.find({userId, otherId: list[i]._id, type: 'like'});
+        list[i]._doc.isfollow = relation !== null ? true : false;
+        votelist.push(list[i]._doc);
+      }
+    };
+    await getList ();
+    ctx.success(votelist);
   }
 
   /**

@@ -13,7 +13,22 @@ export function follower() {
 }
 
 export function fetchAll(id) {
-  return request(`/api/relation/all?otherId=${id}`);
+  const url = id === undefined ? '/api/relation/all' : `/api/relation/all?otherId=${id}`;
+  return request(url);
+}
+
+export function follow(relation) {
+  return request('/api/relation/tofollow', {
+    method: 'POST',
+    body: JSON.stringify(relation),
+  });
+}
+
+export function unfollow(relation) {
+  return request('/api/relation/unfollow', {
+    method: 'POST',
+    body: JSON.stringify(relation),
+  });
 }
 
 // export function vote_launch() {

@@ -7,7 +7,17 @@ class commentController{
   static async list(ctx, next){
     const userId = new mongoose.mongo.ObjectId('58fc03c2b78b45f01353b057');
     const list = await commentModel.find({ from: userId });
-    ctx.success(list);
+    // 插入follow字段
+    const commentlist = [];
+    const getList = async ()=>{
+      for(let i=0,len=list.length;i<len;i++){
+        const relation = await relationModel.find({userId, otherId: list[i]._id, type: 'comment'});
+        list[i]._doc.isfollow = relation !== null ? true : false;
+        commentlist.push(list[i]._doc);
+      }
+    };
+    await getList ();
+    ctx.success(commentlist);
   }
 
   static async edit(ctx, next){

@@ -82,8 +82,8 @@ function Me({ location, others, params, dispatch, userId }) {
               }
             </Row>
           </TabPane>
-          <TabPane tab={`参与的投票 ${posts.length}`} key="5">{posts}</TabPane>
-          <TabPane tab={`发起的投票 ${postsJoin.length}`} key="6">{postsJoin}</TabPane>
+          <TabPane tab={`发起的投票 ${posts.length}`} key="5">{posts}</TabPane>
+          <TabPane tab={`参与的投票 ${postsJoin.length}`} key="6">{postsJoin}</TabPane>
           <TabPane tab={`发布的评论 ${msgs.length}`} key="7">
             <ul>
               {msgs}

@@ -24,11 +24,13 @@ export default {
       const { data } = yield call(userService.fetchAll, payload);
       yield put({ type: 'save', payload: { type: 'all', data: data.data } });
     },
-    *tofollow({ payload: { relation } }, { call }) {
-      yield call(userService.tofolow, relation);
+    *tofollow({ payload: { relation, id } }, { call, put }) {
+      yield call(userService.tofollow, relation);
+      yield put({ type: 'fetch_all', payload: id });
     },
-    *unfollow({ payload: { relation } }, { call }) {
+    *unfollow({ payload: { relation, id } }, { call, put }) {
       yield call(userService.unfollow, relation);
+      yield put({ type: 'fetch_all', payload: id });
     },
   },
   subscriptions: {

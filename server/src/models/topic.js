@@ -6,6 +6,7 @@ const ObjectId = Schema.ObjectId;
 const topicSchema = new Schema({
   name: String ,
   pic: String,
+  isfollow: Boolean,
   vote_count: Number, //相关投票数
 });
 

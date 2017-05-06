@@ -7,14 +7,14 @@ import topicModel from '../models/topic';
 class relationController {
 
   static async all(ctx, next){
-    const userId = '58fc03c2b78b45f01353b057';
+    const userId = '58fc03c2b78b45f01353b054';
     console.log(ctx.query.otherId);
     const queryId = ctx.query.otherId ? ctx.query.otherId : userId;
     // 查询 info
     const info = await userModel.findById(queryId);
     if( ctx.query.otherId){
-      const relation = await relationModel.find({userId: queryId, otherId: info._id, type: 'user'});
-      info._doc.isfollow = relation !== null ? true : false;
+      const relation = await relationModel.findOne({userId: userId, otherId: info._id, type: 'user'});
+      info._doc.isfollow = !relation ? false : true;
     }
     // 查询 vote
     const votes = await voteModel.find({ user: queryId }).populate('user');
@@ -26,7 +26,7 @@ class relationController {
       for(let i=0,len=following_r.length;i<len;i++){
         let following = await userModel.findById(following_r[i].otherId);
         if( ctx.query.otherId){
-          const relation = await relationModel.find({userId: queryId, otherId: following._id, type: 'user'});
+          const relation = await relationModel.findOne({userId: userId, otherId: following._id, type: 'user'});
           following._doc.isfollow = !relation ? false : true;
         }
         followings.push(following._doc);
@@ -39,8 +39,8 @@ class relationController {
       for(let i=0,len=follower_r.length;i<len;i++){
         let follower = await userModel.findById(follower_r[i].userId);
         if( ctx.query.otherId){
-          const relation = await relationModel.find({userId: queryId, otherId: follower._id, type: 'user'});
-          follower._doc.isfollow = relation !== null ? true : false;
+          const relation = await relationModel.findOne({userId: userId, otherId: follower._id, type: 'user'});
+          follower._doc.isfollow = !relation ? false : true;
         }
         followers.push(follower._doc);
       }
@@ -89,7 +89,7 @@ class relationController {
    * @param {*} next 
    */
   static async following(ctx, next){
-    const userId = '58fc03c2b78b45f01353b057';
+    const userId = '58fc03c2b78b45f01353b054';
     const list = await relationModel.find({userId: userId, type:'user'});
     list.map(async (relation) => {
       relation.otherId = await userModel.findById(relation.otherId);
@@ -98,7 +98,7 @@ class relationController {
   }
 
   static async follower(ctx, next){
-    const otherId = '58fc03c2b78b45f01353b057';
+    const otherId = '58fc03c2b78b45f01353b054';
     const list = await relationModel.find({otherId: otherId, type:'user'});
     list.map(async (relation) => {
       relation.userId = await userModel.findById(relation.userId);
@@ -130,7 +130,7 @@ class relationController {
 
   static async unfollow(ctx, next){
     const relation = ctx.request.body;
-    await relationModel.remove(relation, (err) => {
+    await relationModel.findOneAndRemove(relation, (err) => {
       if(err) ctx.error(err, '取消操作失败！');
     });
     if (relation.type === 'user'){

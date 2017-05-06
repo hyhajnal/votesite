@@ -17,9 +17,12 @@ export function fetchAll(id) {
   return request(url);
 }
 
-export function follow(relation) {
+export function tofollow(relation) {
   return request('/api/relation/tofollow', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(relation),
   });
 }
@@ -27,6 +30,9 @@ export function follow(relation) {
 export function unfollow(relation) {
   return request('/api/relation/unfollow', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(relation),
   });
 }

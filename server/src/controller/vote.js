@@ -14,7 +14,7 @@ class VoteController {
    * @param {Boolean} aesc 降序默认
    */
   static async list( ctx, next ){
-    const userId = '58fc03c2b78b45f01353b04f';
+    const userId = "58fc03c2b78b45f01353b054";
     let findkey = ctx.query.tag ? 
                   { tag: ctx.query.tag } : {};
     let sortkey = {};
@@ -29,8 +29,8 @@ class VoteController {
     const votelist = [];
     const getList = async ()=>{
       for(let i=0,len=list.length;i<len;i++){
-        const relation = await relationModel.find({userId, otherId: list[i]._id, type: 'like'});
-        list[i]._doc.isfollow = relation !== null ? true : false;
+        const relation = await relationModel.findOne({userId: userId, otherId: list[i]._id, type: 'like'});
+        list[i]._doc.isfollow = !relation ? false : true;
         votelist.push(list[i]._doc);
       }
     };
@@ -46,7 +46,7 @@ class VoteController {
    */
   static async tovote( ctx, next ){
     const { voteId, itemIdx } = ctx.params;
-    const userId = '58fc03c2b78b45f01353b04f';
+    const userId = "58fc03c2b78b45f01353b054";
     //voteitem.num++
     let vote = await voteModel.findById(voteId);
     // let v = vote.toJSON();  
@@ -134,9 +134,9 @@ class VoteController {
   static async detail( ctx, next ){
     //标志是否已投票过
     const { voteId } = ctx.params;
-    const userId = '58fc03c2b78b45f01353b04f';
+    const userId = '58fc03c2b78b45f01353b054';
     let is_voted = await relationModel
-                          .findOne({otherId: voteId, userId: userId});
+                          .findOne({otherId: voteId, userId: userId, type: 'vote_join'});
     is_voted = !is_voted ? -1 : is_voted.extra;
     //detail
     let votedetail = await voteModel.detail(voteId);
@@ -146,6 +146,17 @@ class VoteController {
       if(err) ctx.error(err,'vote浏览数增加失败！');
     });
     votedetail.is_voted = is_voted; 
+    // like
+   const addFollow = async () => {
+      for(let i=0,len=votedetail.comments.length;i<len;i++){
+        const relation = await relationModel.findOne({
+          userId: userId, otherId: votedetail.comments[i]._id, type: 'comment'
+        });
+        votedetail.comments[i].isfollow = !relation ? false : true;
+      }
+  }  
+    await addFollow();
+    console.log(votedetail.is_voted);
     ctx.success(votedetail);
   }
 
@@ -189,7 +200,17 @@ class VoteController {
    * 获取所有topics
    */
   static async topics ( ctx, next ){
+    const userId = '58fc03c2b78b45f01353b054';
     const topics = await topicModel.find();
+    const addFollow = async () => {
+      for(let i=0,len=topics.length;i<len;i++){
+        const relation = await relationModel.findOne({
+          userId: userId, otherId: topics[i]._id, type: 'topic'
+        });
+        topics[i].isfollow = !relation ? false : true;
+      }
+  }  
+    await addFollow();
     ctx.success(topics);
   }
 

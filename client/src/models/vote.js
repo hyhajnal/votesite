@@ -1,5 +1,6 @@
 
 import * as voteService from '../services/vote';
+import * as userService from '../services/user';
 
 export default {
   namespace: 'vote',
@@ -54,6 +55,24 @@ export default {
     *fetch_topics(action, { call, put }) {
       const { data } = yield call(voteService.fetchTopics);
       yield put({ type: 'save_topics', payload: data.data });
+    },
+    *tofollow({ payload: { relation, voteId } }, { call, put }) {
+      yield call(userService.tofollow, relation);
+      if (relation.type === 'comment') {
+        yield put({ type: 'fetch_vote', payload: voteId });
+      }
+      if (relation.type === 'like' || relation.type === 'topic') {
+        yield put({ type: 'fetch_list' });
+      }
+    },
+    *unfollow({ payload: { relation, voteId } }, { call, put }) {
+      yield call(userService.unfollow, relation);
+      if (relation.type === 'comment') {
+        yield put({ type: 'fetch_vote', payload: voteId });
+      }
+      if (relation.type === 'like' || relation.type === 'topic') {
+        yield put({ type: 'fetch_list' });
+      }
     },
   },
   subscriptions: {

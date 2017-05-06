@@ -13,6 +13,7 @@ const voteSchema = new Schema({
   msg: Number,
   follow: Number,
   is_voted: Number,
+  isfollow: Boolean,
   user: {type: ObjectId, ref: 'User'}, //发起人
   complex: Boolean, //两种布局：带图片／纯文字
   round: {type: Number, default: 1}, // 当前进行至第几轮投票了

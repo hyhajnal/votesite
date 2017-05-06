@@ -8,6 +8,7 @@ const commentSchema = new Schema({
   star: Number,
   msg: Number,
   pid: String,
+  isfollow: Boolean,
   voteId: {type: ObjectId, ref: 'Vote'},
   from: {type: ObjectId, ref: 'User'},
   to: {type: ObjectId, ref: 'User'},

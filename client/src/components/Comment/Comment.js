@@ -87,12 +87,12 @@ class Comment extends Component {
     });
   }
 
-  follow = (relation, dispatch) => {
-    dispatch({ type: 'user/tofollow', payload: { relation } });
+  follow = (relation, dispatch, voteId) => {
+    dispatch({ type: 'vote/tofollow', payload: { relation, voteId } });
   }
 
-  unfollow = (relation, dispatch) => {
-    dispatch({ type: 'user/unfollow', payload: { relation } });
+  unfollow = (relation, dispatch, voteId) => {
+    dispatch({ type: 'vote/unfollow', payload: { relation, voteId } });
   }
 
   render() {
@@ -179,17 +179,18 @@ class Comment extends Component {
                 <Icon className="gutter-h" type="message" onClick={e => this.handleExpand(e, comment.from)} />{comment.childs.length}
               </span>
               <span className={styles.footlabel}>
-                comment.isfollow ?
-                <Icon
-                  className="gutter-h"
-                  type="heart"
-                  onClick={() => this.unfollow(relation, dispatch)}
-                /> :
-                <Icon
-                  className="gutter-h"
-                  type="heart-o"
-                  onClick={() => this.follow(relation, dispatch)}
-                />
+                {comment.isfollow ?
+                  <Icon
+                    className="gutter-h"
+                    type="heart"
+                    onClick={() => this.unfollow(relation, dispatch, voteId)}
+                  /> :
+                  <Icon
+                    className="gutter-h"
+                    type="heart-o"
+                    onClick={() => this.follow(relation, dispatch, voteId)}
+                  />
+                }
                 {comment.star}
               </span>
             </Row>

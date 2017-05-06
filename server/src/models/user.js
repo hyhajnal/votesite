@@ -7,6 +7,7 @@ const userSchema = new Schema({
   _id: ObjectId ,
   name: String ,
   psd: String ,
+  isfollow: Boolean,
   avator: String,
   following_count: Number, //关注用户数
   follower_count: Number, //粉丝数

@@ -10,28 +10,48 @@ import Message from '../components/Info/Message/Message';
 const TabPane = Tabs.TabPane;
 
 
-function Other({ location, others }) {
+function Other({ location, others, dispatch, userId }) {
   if (others.votes === undefined) return null;
   const { votes, followings, followers, topics, vote_joins, info, comments } = others;
 
   const posts = [];
   const postsJoin = [];
   votes.forEach((vote, i) =>
-    posts.push(<ArticalItem key={i} post={vote} loading={false} />),
+    posts.push(
+      <ArticalItem
+        key={i}
+        post={vote}
+        loading={false}
+        userId={userId}
+        dispatch={dispatch}
+      />),
   );
 
   vote_joins.forEach((vote, i) =>
-    postsJoin.push(<ArticalItem key={i} post={vote} loading={false} />),
+    postsJoin.push(
+      <ArticalItem
+        key={i}
+        post={vote}
+        loading={false}
+        userId={userId}
+        dispatch={dispatch}
+      />),
   );
 
   const followingArray = [];
   followings.forEach((following, i) =>
-    followingArray.push(<Col span={8} key={i}><User user={following} /></Col>),
+    followingArray.push(
+      <Col span={8} key={i}>
+        <User user={following} dispatch={dispatch} userId={userId} queryId={info._id} />
+      </Col>),
   );
 
   const followerArray = [];
   followers.forEach((follower, i) =>
-    followerArray.push(<Col span={8} key={i}><User user={follower} /></Col>),
+    followerArray.push(
+      <Col span={8} key={i}>
+        <User user={follower} dispatch={dispatch} userId={userId} queryId={info._id} />
+      </Col>),
   );
 
   const msgs = [];
@@ -39,6 +59,20 @@ function Other({ location, others }) {
     msgs.push(
       <Message key={i} msg={comments[i]} />,
     );
+  }
+
+  const relation = {
+    userId,
+    otherId: info._id,
+    type: 'user',
+  };
+
+  function follow(id) {
+    dispatch({ type: 'user/tofollow', payload: { relation, id } });
+  }
+
+  function unfollow(id) {
+    dispatch({ type: 'user/unfollow', payload: { relation, id } });
   }
 
   return (
@@ -52,8 +86,13 @@ function Other({ location, others }) {
           }</em></p>
         <Row>
           {
-            !info.isfollow ? <Button type="primary" className="gutter-h-m">关注</Button>
-            : <Button type="primary" className="gutter-h-m" ghost >取关</Button>
+            !info.isfollow ?
+              <Button type="primary" className="gutter-h-m" onClick={() => follow(info._id)}>
+                关注
+              </Button>
+              : <Button type="primary" className="gutter-h-m" ghost onClick={() => unfollow(info._id)}>
+                  取关
+                </Button>
           }
           <Button type="primary" className="gutter-h-m">发消息</Button>
         </Row>
@@ -101,6 +140,7 @@ function mapStateToProps(state) {
   return {
     loading: state.loading.models.user,
     others: state.user.all,
+    userId: state.user.user._id,
   };
 }
 

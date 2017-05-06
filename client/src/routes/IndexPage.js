@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Carousel, Row, Col, Radio } from 'antd';
+import { Carousel, Row, Col, Radio, Icon } from 'antd';
 import MainLayout from '../components/MainLayout/MainLayout';
 import ArticalItem from '../components/Home/ArticalItem';
 import styles from './IndexPage.less';
@@ -43,6 +43,16 @@ function onChange1(e, dispatch) {
   });
 }
 
+function follow(e, relation, dispatch) {
+  e.stopPropgation();
+  dispatch({ type: 'vote/tofollow', payload: { relation } });
+}
+
+function unfollow(e, relation, dispatch) {
+  e.stopepropagation();
+  dispatch({ type: 'vote/unfollow', payload: { relation } });
+}
+
 function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
   const article = [];
   posts.forEach((post, i) => {
@@ -79,11 +89,28 @@ function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
             </Radio>
             {
               topics.map((item, index) => {
+                const relation = {
+                  userId,
+                  otherId: item._id,
+                  type: 'topic',
+                };
                 return (
                   <Radio value={item.name} key={index + item}>
                     <Col className={styles.topic}>
                       <img src={item.pic} width="32" height="32" alt={item.name} />
                       {item.name}&nbsp;&nbsp;{item.vote_count}
+                      {item.isfollow ?
+                        <Icon
+                          className="gutter-h"
+                          type="heart"
+                          onClick={e => unfollow(e, relation, dispatch)}
+                        /> :
+                        <Icon
+                          className="gutter-h"
+                          type="heart-o"
+                          onClick={e => follow(e, relation, dispatch)}
+                        />
+                      }
                     </Col>
                   </Radio>
                 );

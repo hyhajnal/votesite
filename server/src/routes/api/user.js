@@ -8,6 +8,6 @@ router
   .get('/reply', userController.reply) //查询收到的回复
   .get('/vote', userController.vote) //查询发起的投票
   .post('/login', userController.login)
-  .post('/register', userController.register);
+  .post('/reg', userController.register);
 
   export default router;

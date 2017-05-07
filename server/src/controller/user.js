@@ -56,11 +56,13 @@ class UserController {
   static async login(ctx){
     const c_user = ctx.request.body;
     //const c_psd = await cryptoHelp.decipher('aes-256-cbc', key, c_user.psd);
-    const user = await userModel.find({name: c_user.name});
-    if( user.psd === c_user.psd){
+    const user = await userModel.findOne({accountId: c_user.accountId});
+    if(!user){
+      ctx.error(null, '查无此人！', 200);
+    }else if( user.psd === c_user.psd){
       ctx.success(user, '登录成功！');
     }else{
-      ctx.error('登录失败！');
+      ctx.error(null, '密码错误！', 200);
     }
 
   }
@@ -70,12 +72,13 @@ class UserController {
    * @param {Object} user
    */
   static async register(ctx){
-    let new_user = ctx.request.body.user;
     //new_user.psd = await cryptoHelp.cipher('aes-256-cbc', key, new_user.psd);
-    const user = new userModel(new_user);
-    user.save((err) => {
-      if(err) ctx.error("注册失败！");
-    });
+    let user = new userModel(ctx.request.body);
+    try {
+      user = await user.save();
+    } catch(err){
+      ctx.error(err, "注册失败！");
+    }
     ctx.success(user);
   }
 

@@ -2,11 +2,15 @@ import React from 'react';
 import classNames from 'classnames';
 import { Menu, Icon, Button, Row, Col, Input } from 'antd';
 import { Link } from 'dva/router';
+import { connect } from 'dva';
 import styles from './Header.css';
 
-function Header({ collapsedCls, location, user }) {
+function Header({ collapsedCls, location, user, dispatch }) {
   const headCls = classNames(styles.header, collapsedCls);
   const Search = Input.Search;
+  function logout() {
+    dispatch({ type: 'user/logout', payload: 'logout' });
+  }
   return (
     <div className={headCls} id="header">
       <Row type="flex" justify="center" align="middle">
@@ -42,8 +46,9 @@ function Header({ collapsedCls, location, user }) {
         </Col>
         <Col span={8}>
           <Link to="voteEdit"><Button type="danger gutter-h-m" ghost >发起投票</Button></Link>
-          { user.name ? `你好，${user.name}` :
-          <Link to="login"><Button type="primary gutter-h-m">登录</Button></Link>
+          { user.name ?
+            <span>你好,{user.name}<em className={styles.logout} onClick={logout}>退出</em></span> :
+            <Link to="login"><Button type="primary gutter-h-m">登录</Button></Link>
           }
         </Col>
       </Row>
@@ -51,4 +56,10 @@ function Header({ collapsedCls, location, user }) {
   );
 }
 
-export default Header;
+function mapStateToProps(state) {
+  return {
+    loading: state.loading.models.user,
+  };
+}
+
+export default connect(mapStateToProps)(Header);

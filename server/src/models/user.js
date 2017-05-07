@@ -4,19 +4,19 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const userSchema = new Schema({
-  _id: ObjectId ,
+  accountId: String,
   name: String ,
   psd: String ,
   isfollow: Boolean,
   avator: String,
-  following_count: Number, //关注用户数
-  follower_count: Number, //粉丝数
-  topic_count: Number, //关注的话题
-  vote_count: Number, //发起的投票数量
-  vote_join_count: Number, //参与的投票数量
-  reply_count: Number, //回复
-  follower_count_new: Number, //新增粉丝数
-  reply_count_new: Number //新增回复（包括在发起／参与的投票）
+  following_count: {type: Number, default: 0}, //关注用户数
+  follower_count: {type: Number, default: 0}, //粉丝数
+  topic_count: {type: Number, default: 0}, //关注的话题
+  vote_count: {type: Number, default: 0}, //发起的投票数量
+  vote_join_count: {type: Number, default: 0}, //参与的投票数量
+  reply_count: {type: Number, default: 0}, //回复
+  follower_count_new: {type: Number, default: 0}, //新增粉丝数
+  reply_count_new: {type: Number, default: 0} //新增回复（包括在发起／参与的投票）
 });
 
 // userSchema.methods.find = async () => {

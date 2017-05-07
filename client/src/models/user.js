@@ -1,13 +1,10 @@
+import { routerRedux } from 'dva/router';
 import * as userService from '../services/user';
 
 export default {
   namespace: 'user',
   state: {
     user: {},
-    following: [],
-    folllower: [],
-    vote_launch: [],
-    vote_join: [],
     all: {},
   },
   reducers: {
@@ -32,11 +29,31 @@ export default {
       yield call(userService.unfollow, relation);
       yield put({ type: 'fetch_all', payload: id });
     },
+    *reg({ payload: { user } }, { call, put }) {
+      const { data } = yield call(userService.reg, user);
+      if (data.success) {
+        yield put(routerRedux.push(`/redirect/${data.data.accountId}`));
+      } else {
+        throw data;
+      }
+    },
+    *login({ payload: { user } }, { call, put }) {
+      const { data } = yield call(userService.login, user);
+      if (data.success) {
+        yield put({ type: 'save', payload: { type: 'user', data: data.data } });
+        yield put(routerRedux.push('/'));
+      } else {
+        throw data;
+      }
+    },
+    *logout(action, { put }) {
+      yield put({ type: 'save', payload: { type: 'user', data: {} } });
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
       let markMe = 0;
-      dispatch({ type: 'fetch', payload: { type: 'user' } });
+      // dispatch({ type: 'fetch', payload: { type: 'user' } });
       history.listen(({ pathname, query }) => {
         if (pathname === '/other' && markMe !== query.id) {
           dispatch({ type: 'fetch_all', payload: query.id });

@@ -9,6 +9,10 @@ import About from './routes/About';
 import Me from './routes/Me';
 import Other from './routes/Other';
 
+import Register from './routes/Register.js';
+
+import Redirect from './routes/Redirect.js';
+
 function RouterConfig({ history }) {
   return (
     <Router history={history}>
@@ -20,6 +24,8 @@ function RouterConfig({ history }) {
       <Route path="/about" component={About} />
       <Route path="/me/:id" component={Me} />
       <Route path="/other" component={Other} />
+      <Route path="/register" component={Register} />
+      <Route path="/redirect/:id" component={Redirect} />
     </Router>
   );
 }

@@ -11,3 +11,9 @@
 :global(#header.ant-menu-horizontal){
 	border:none;
 }
+
+.logout{
+	margin-right: 20px;
+	cursor: pointer;
+	color: #EC6149;
+}

@@ -1,34 +1,9 @@
 import React, { Component } from 'react';
-import { Form, Input, Cascader, Select, Button, Row, Col } from 'antd';
+import { Form, Input, Button, Row, Col } from 'antd';
 import Avatar from './Avatar';
 import './UserEdit.css';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
-
-const residences = [{
-  value: 'zhejiang',
-  label: 'Zhejiang',
-  children: [{
-    value: 'hangzhou',
-    label: 'Hangzhou',
-    children: [{
-      value: 'xihu',
-      label: 'West Lake',
-    }],
-  }],
-}, {
-  value: 'jiangsu',
-  label: 'Jiangsu',
-  children: [{
-    value: 'nanjing',
-    label: 'Nanjing',
-    children: [{
-      value: 'zhonghuamen',
-      label: 'Zhong Hua Men',
-    }],
-  }],
-}];
 
 class UserEditForm extends Component {
   state = {
@@ -86,13 +61,6 @@ class UserEditForm extends Component {
         },
       },
     };
-    const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: '86',
-    })(
-      <Select className="icp-selector">
-        <Option value="86">+86</Option>
-      </Select>,
-    );
     return (
       <Row className="gutter-vl-m">
         <Col span={18}>
@@ -123,38 +91,13 @@ class UserEditForm extends Component {
             </FormItem>
             <FormItem
               {...formItemLayout}
-              label="手机号"
-            >
-              {getFieldDecorator('phone', {
-                rules: [{ message: '请输入你的手机号码!' }],
-              })(
-                <Input addonBefore={prefixSelector} />,
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="邮箱"
+              label="原密码"
               hasFeedback
             >
-              {getFieldDecorator('email', {
-                rules: [{
-                  type: 'email', message: '请输入正确的邮箱格式!',
-                }, {
-                  message: '请输入你的邮箱!',
-                }],
-              })(
-                <Input />,
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="密码"
-              hasFeedback
-            >
-              {getFieldDecorator('password', {
+              {getFieldDecorator('oldpassword', {
                 initialValue: user.psd,
                 rules: [{
-                  required: true, message: '请输入你的密码!',
+                  required: true, message: '请输入原密码!',
                 }, {
                   validator: this.checkConfirm,
                 }],
@@ -164,28 +107,33 @@ class UserEditForm extends Component {
             </FormItem>
             <FormItem
               {...formItemLayout}
-              label="确认密码"
+              label="新密码"
+              hasFeedback
+            >
+              {getFieldDecorator('password', {
+                initialValue: user.psd,
+                rules: [{
+                  required: true, message: '请输入新密码!',
+                }, {
+                  validator: this.checkConfirm,
+                }],
+              })(
+                <Input type="password" />,
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="确认新密码"
               hasFeedback
             >
               {getFieldDecorator('confirm', {
                 rules: [{
-                  required: true, message: '请再次输入密码!',
+                  required: true, message: '两次密码不一致!',
                 }, {
                   validator: this.checkPassword,
                 }],
               })(
                 <Input type="password" onBlur={this.handleConfirmBlur} />,
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="地点"
-            >
-              {getFieldDecorator('residence', {
-                initialValue: ['浙江', '杭州', '西湖'],
-                rules: [{ message: 'Please select your habitual residence!' }],
-              })(
-                <Cascader options={residences} />,
               )}
             </FormItem>
             <FormItem {...tailFormItemLayout}>

@@ -37,6 +37,22 @@ export function unfollow(relation) {
   });
 }
 
-// export function vote_launch() {
-//   return request('/api/relation/follower');
-// }
+export function reg(newuser) {
+  return request('/api/user/reg', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newuser),
+  });
+}
+
+export function login(newuser) {
+  return request('/api/user/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newuser),
+  });
+}

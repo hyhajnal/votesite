@@ -15,7 +15,7 @@ class UserController {
    * @param {String} userId
    */
   static async info( ctx, next ){
-    const userId = '58fc03c2b78b45f01353b054';
+    const userId = ctx.session.userId;
     const user = await userModel.findById(userId);
     ctx.success(user);
   }
@@ -25,7 +25,7 @@ class UserController {
    * @param {Object} user
    */
   static async edit( ctx, next ){
-    let user = await userModel.findById('58fc03c2b78b45f01353b054');
+    let user = await userModel.findById(ctx.session.userId);
     user = ctx.request.body.user;
     user.save((err) => {
       if(err) ctx.error(err,'修改失败');
@@ -38,7 +38,7 @@ class UserController {
    * @param {String} userId
    */
   static async vote(ctx){
-    const userId = '58fc03c2b78b45f01353b054';
+    const userId = ctx.session.userId;
     const votelist = await voteModel.find({user: userId});
     ctx.success(votelist);
   }
@@ -48,7 +48,7 @@ class UserController {
    * @param {String} userId
    */
   static async reply(ctx){
-    const userId = '58fc03c2b78b45f01353b054';
+    const userId = ctx.session.userId;
     const commentlist = await commentModel.find({to: userId});
     ctx.success(commentlist);
   }
@@ -60,11 +60,22 @@ class UserController {
     if(!user){
       ctx.error(null, '查无此人！', 200);
     }else if( user.psd === c_user.psd){
+      ctx.session.userId = user._id;
+      console.log('登录',ctx.session.userId);
       ctx.success(user, '登录成功！');
     }else{
       ctx.error(null, '密码错误！', 200);
     }
 
+  }
+
+  static async logout(ctx){
+    ctx.session.userId = null;
+    // cookie 设置过期
+    let d= new Date();
+    d.setTime(d.getTime()-1);
+    ctx.cookies.set('siteuser', ' ' ,{expires:d});
+    ctx.success(null, 'logout');
   }
 
   /**

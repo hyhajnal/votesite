@@ -7,10 +7,14 @@ function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
-
-  const error = new Error(response.statusText);
-  error.response = response;
-  throw error;
+  if (response.status === 500) {
+    const error = { msg: '服务器出错！' };
+    throw error;
+  }
+  if (response.status === 403) {
+    const error = { msg: '需要登录才可进行操作！' };
+    throw error;
+  }
 }
 
 /**
@@ -21,12 +25,17 @@ function checkStatus(response) {
  * @return {object}           An object containing either "data" or "err"
  */
 export default async function request(url, options) {
-  const response = await fetch(url, options);
+  const newOptions = { ...options, mode: 'cors', credentials: 'include' };
+  // console.log(newOptions);
+  const response = await fetch(url, newOptions);
 
   checkStatus(response);
 
   const data = await response.json();
 
+  if (!data.success) {
+    throw data;
+  }
   const ret = {
     data,
     headers: {},

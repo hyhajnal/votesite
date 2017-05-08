@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 class commentController{
 
   static async list(ctx, next){
-    const userId = new mongoose.mongo.ObjectId('58fc03c2b78b45f01353b057');
+    const userId = new mongoose.mongo.ObjectId(ctx.session.userId);
     const list = await commentModel.find({ from: userId });
     // 插入follow字段
     const commentlist = [];
@@ -34,7 +34,7 @@ class commentController{
   static async delete(ctx, next){
     const { id, pid } = ctx.params;
     commentModel.findByIdAndRemove(id, (err) => {
-      if(err) ctx.error(err,'投票删除失败！')
+      if(err) return ctx.error(err,'投票删除失败！')
     });
     // 如果是子投票需要从父级那边删除
     if(pid != '-1'){

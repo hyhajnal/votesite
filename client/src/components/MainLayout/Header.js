@@ -29,12 +29,12 @@ function Header({ collapsedCls, location, user, dispatch }) {
             <Menu.Item key="/about">
               <Link to="/about"><Icon type="smail-o" />关于</Link>
             </Menu.Item>
-            <Menu.Item key="/me">
+            {/* <Menu.Item key="/me">
               <Link to="/me/1"><Icon type="smail-o" />我</Link>
             </Menu.Item>
             <Menu.Item key="/other">
               <Link to="/other"><Icon type="smail-o" />他</Link>
-            </Menu.Item>
+            </Menu.Item>*/}
           </Menu>
         </Col>
         <Col span={8}>

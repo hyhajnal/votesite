@@ -13,6 +13,10 @@ const TabPane = Tabs.TabPane;
 
 function Me({ location, others, params, dispatch, userId }) {
   if (others.votes === undefined) return null;
+  if (!userId) {
+    const error = { msg: '需要登录才能操作！' };
+    throw error;
+  }
   function callback(key) {
     browserHistory.push(`/me/${key}`);
   }

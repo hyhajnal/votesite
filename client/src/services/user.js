@@ -56,3 +56,7 @@ export function login(newuser) {
     body: JSON.stringify(newuser),
   });
 }
+
+export function logout() {
+  return request('/api/user/logout');
+}

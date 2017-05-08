@@ -39,6 +39,8 @@
     "koa-logger": "^2.0.0",
     "koa-passport": "^2.0.1",
     "koa-router": "^7.0.1",
+    "koa-session": "^5.0.0",
+    "koa-static2": "^0.1.8",
     "mongoose": "^4.3.7",
     "mongoose-id-validator": "^0.1.10",
     "mongoose-validator": "^1.2.4",

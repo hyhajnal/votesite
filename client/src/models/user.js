@@ -13,7 +13,9 @@ export default {
     },
   },
   effects: {
-    *fetch({ payload: { type } }, { call, put }) {
+    *fetch({ payload: { type } }, { call, put, select }) {
+      const user = yield select(state => state.user);
+      if (user === null) return;
       const { data } = yield call(userService[type]);
       yield put({ type: 'save', payload: { type, data: data.data } });
     },
@@ -46,15 +48,18 @@ export default {
         throw data;
       }
     },
-    *logout(action, { put }) {
+    *logout(action, { call, put }) {
+      yield call(userService.logout);
       yield put({ type: 'save', payload: { type: 'user', data: {} } });
     },
   },
   subscriptions: {
     setup({ dispatch, history }) {
       let markMe = 0;
-      // dispatch({ type: 'fetch', payload: { type: 'user' } });
       history.listen(({ pathname, query }) => {
+        if (document.cookie) {
+          dispatch({ type: 'fetch', payload: { type: 'user' } });
+        }
         if (pathname === '/other' && markMe !== query.id) {
           dispatch({ type: 'fetch_all', payload: query.id });
           markMe = query.id;

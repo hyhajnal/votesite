@@ -59,7 +59,7 @@ function Me({ location, others, params, dispatch, userId }) {
       <div className={styles.content}>
         <Tabs defaultActiveKey={params.id} activeKey={params.id} onChange={callback}>
           <TabPane tab="个人资料" key="1">
-            <UserEdit user={info} />
+            <UserEdit user={info} dispatch={dispatch} />
           </TabPane>
           <TabPane tab={'消息'} key="8">Content of Tab Pane 3</TabPane>
           <TabPane tab={`粉丝 ${followerArray.length}`} key="3">

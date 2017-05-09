@@ -26,9 +26,15 @@ class UserController {
    */
   static async edit( ctx, next ){
     let user = await userModel.findById(ctx.session.userId);
-    user = ctx.request.body.user;
+    const { name, desc, oldpsd, newpsd } = ctx.request.body;
+    user.name = name;
+    user.desc = desc;
+    if(user.psd !== oldpsd){
+      return ctx.error(null, '原密码不正确');
+    }
+    if(newpsd) user.psd = newpsd;
     user.save((err) => {
-      if(err) ctx.error(err,'修改失败');
+      if(err) return ctx.error(err,'修改失败');
     })
     ctx.success(user);
   }
@@ -70,11 +76,12 @@ class UserController {
   }
 
   static async logout(ctx){
+    console.log(new Date(getExpTime(-1)));
     ctx.session.userId = null;
     // cookie 设置过期
-    let d= new Date();
-    d.setTime(d.getTime()-1);
-    ctx.cookies.set('siteuser', ' ' ,{expires:d});
+    ctx.cookies.set('siteuser', '222', {
+        expires: new Date(getExpTime(-1))
+      });
     ctx.success(null, 'logout');
   }
 
@@ -93,6 +100,12 @@ class UserController {
     ctx.success(user);
   }
 
+}
+
+function getExpTime(day) {
+  var exp = new Date();
+  exp.setTime(exp.getTime() + (day * 1000 * 60 * 60 * 24));
+  return exp.toGMTString();
 }
 
 export default UserController;

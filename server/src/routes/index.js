@@ -6,8 +6,10 @@ import vote from './api/vote';
 import relation from './api/relation';
 import comment from './api/comment';
 import user from './api/user';
+import common from './api/common';
 
 export default function routes(app) {
+  router.use('/common', common.routes(), common.allowedMethods());
   router.use('/vote', vote.routes(), vote.allowedMethods());
   router.use('/relation', relation.routes(), relation.allowedMethods());
   router.use('/comment', comment.routes(), comment.allowedMethods());

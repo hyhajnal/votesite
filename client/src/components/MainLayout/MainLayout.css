@@ -19,11 +19,22 @@
   height: 100vh;
 }
 
-:global(.sider-show){
-	padding-right:200px;
-	transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+.top{
+	position: fixed;
+	bottom: 40px;
+	right: 40px;
 }
 
-:global(.sider-close){
-	/*padding-right:64px; */
+.right{
+	position: fixed;
+	bottom: 20px;
+	right: 40px;
+}
+
+:global(.sider-show){
+	padding-right:200px;
+}
+
+.wrap{
+	transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 }

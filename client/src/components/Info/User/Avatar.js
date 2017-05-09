@@ -23,7 +23,7 @@ function beforeUpload(file) {
 
 class Avatar extends React.Component {
   state = {
-    imageUrl: 'https://farm4.staticflickr.com/3944/33909566286_7cca4fb086_k.jpg',
+    imageUrl: this.props.pic,
   };
 
   handleChange = (info) => {

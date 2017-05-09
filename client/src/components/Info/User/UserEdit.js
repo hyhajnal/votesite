@@ -14,6 +14,7 @@ class UserEditForm extends Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        this.props.dispatch({ type: 'user/edit', payload: { user: values } });
       }
     });
   }
@@ -23,8 +24,8 @@ class UserEditForm extends Component {
   }
   checkPassword = (rule, value, callback) => {
     const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
+    if (value && value !== form.getFieldValue('newpsd')) {
+      callback('两次密码不一致!');
     } else {
       callback();
     }
@@ -70,7 +71,7 @@ class UserEditForm extends Component {
               label="昵称"
               hasFeedback
             >
-              {getFieldDecorator('nickname', {
+              {getFieldDecorator('name', {
                 initialValue: user.name,
                 rules: [{ required: true, message: '请输入你的昵称!', whitespace: true }],
               })(
@@ -82,7 +83,7 @@ class UserEditForm extends Component {
               label="介绍"
               hasFeedback
             >
-              {getFieldDecorator('nickname', {
+              {getFieldDecorator('desc', {
                 initialValue: user.desc,
                 rules: [{ message: '请输入个人简介!', whitespace: true }],
               })(
@@ -94,8 +95,7 @@ class UserEditForm extends Component {
               label="原密码"
               hasFeedback
             >
-              {getFieldDecorator('oldpassword', {
-                initialValue: user.psd,
+              {getFieldDecorator('oldpsd', {
                 rules: [{
                   required: true, message: '请输入原密码!',
                 }, {
@@ -110,8 +110,7 @@ class UserEditForm extends Component {
               label="新密码"
               hasFeedback
             >
-              {getFieldDecorator('password', {
-                initialValue: user.psd,
+              {getFieldDecorator('newpsd', {
                 rules: [{
                   required: true, message: '请输入新密码!',
                 }, {
@@ -143,7 +142,7 @@ class UserEditForm extends Component {
           </Form>
         </Col>
         <Col span={6}>
-          <Avatar />
+          <Avatar pic={user.avator} />
         </Col>
       </Row>
     );

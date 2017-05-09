@@ -6,6 +6,7 @@ const ObjectId = Schema.ObjectId;
 const userSchema = new Schema({
   accountId: String,
   name: String ,
+  desc: String,
   psd: String ,
   isfollow: Boolean,
   avator: {type:String, default: 'http://localhost:3000/static/avator.jpg' },

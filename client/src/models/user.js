@@ -6,6 +6,7 @@ export default {
   state: {
     user: {},
     all: {},
+    search: {},
   },
   reducers: {
     save(state, { payload: { type, data } }) {
@@ -51,6 +52,15 @@ export default {
     *logout(action, { call, put }) {
       yield call(userService.logout);
       yield put({ type: 'save', payload: { type: 'user', data: {} } });
+    },
+    *edit({ payload: { user } }, { call, put }) {
+      const { data } = yield call(userService.edit, user);
+      yield put({ type: 'save', payload: { type: 'user', data: data.data } });
+    },
+    *search({ payload: { key } }, { call, put }) {
+      const { data } = yield call(userService.search, key);
+      yield put({ type: 'save', payload: { type: 'search', data: data.data } });
+      yield put(routerRedux.push('/search'));
     },
   },
   subscriptions: {

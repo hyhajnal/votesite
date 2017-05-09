@@ -4,6 +4,16 @@ export function user() {
   return request('/api/user/info');
 }
 
+export function edit(edituser) {
+  return request('/api/user/edit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(edituser),
+  });
+}
+
 export function following() {
   return request('/api/relation/following');
 }
@@ -59,4 +69,8 @@ export function login(newuser) {
 
 export function logout() {
   return request('/api/user/logout');
+}
+
+export function search(key) {
+  return request(`/api/common/search/${key}`);
 }

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Layout } from 'antd';
+import { Layout, Button, Icon, BackTop } from 'antd';
+import classnames from 'classnames';
 import { connect } from 'dva';
 import styles from './MainLayout.css';
 import Header from './Header';
 import Sider from './Side';
 
 const { Content } = Layout;
-
 // 纯函数式定义组件，只需要对传入的props进行展示，不需要进行state操作
 class MainLayout extends Component {
 
@@ -18,11 +18,15 @@ class MainLayout extends Component {
     };
   }
 
-  onCollapse = (collapsed) => {
+  onCollapse = () => {
     this.setState({
-      collapsed,
-      mode: collapsed ? 'vertical' : 'inline',
+      collapsed: !this.state.collapsed,
+      mode: !this.state.collapsed ? 'vertical' : 'inline',
     });
+  }
+
+  backTop = () => {
+    document.documentElement.scrollTop = document.body.scrollTop = 0;
   }
 
   render() {
@@ -30,8 +34,12 @@ class MainLayout extends Component {
     const collapsedCls = this.state.collapsed ? 'sider-close' : 'sider-show';
     return (
       <Layout className={`${styles.bg} ant-layout-has-sider`}>
-        <Layout className={collapsedCls}>
-          <Header location={location} collapsedCls={collapsedCls} user={user} />
+        <Layout className={classnames(styles.wrap, collapsedCls)}>
+          <Header
+            location={location}
+            collapsedCls={collapsedCls}
+            user={user}
+          />
           <Content className="content">
             { children }
           </Content>
@@ -43,6 +51,16 @@ class MainLayout extends Component {
           collapsed={this.state.collapsed}
           user={user}
         />
+        <div>
+          <BackTop>
+            <Button type="primary" className={styles.top}>
+              <Icon type="up" />
+            </Button>
+          </BackTop>
+          <Button type="primary" onClick={this.onCollapse} className={styles.right}>
+            <Icon type="right" />
+          </Button>
+        </div>
       </Layout>
     );
   }

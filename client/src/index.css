@@ -1,3 +1,7 @@
+@font-face{
+	font-family: icon-f;
+	src: url('http://localhost:3000/static/font.woff');
+}
 
 html, body, :global(#root) {
   height: 100%;

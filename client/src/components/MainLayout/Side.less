@@ -6,21 +6,13 @@
 	z-index: 999;
 }
 
-:global{
-  #my-sider{
-    .ant-layout-sider-collapsed{
-      .nav-text, img{
-        display: none;
-      }
-      .ant-menu-submenu-vertical{
-        .ant-menu-submenu-title:after {
-          display: none;
-        }
-      }
-      .anticon{
-        font-size: 16px;
-        margin-left: 8px;
-      }
-    }
-  }
+:global(.ant-layout-sider-collapsed){
+	width: 0 !important;
+	img{
+		display: none;
+	}
+}
+
+.myslider{
+	transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 }

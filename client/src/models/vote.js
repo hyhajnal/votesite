@@ -78,7 +78,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === '/') {
+        if (pathname === '/' || pathname === '/search') {
           dispatch({ type: 'fetch_list' });
           dispatch({ type: 'fetch_topics' });
         }

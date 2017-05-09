@@ -20,28 +20,19 @@ function Header({ collapsedCls, location, user, dispatch }) {
             mode="horizontal"
             theme="drak"
           >
-            {/* <Menu.Item key="/users">
-              <Link to="/users"><Icon type="bars" />Users</Link>
-            </Menu.Item>*/}
             <Menu.Item key="/">
               <Link to="/"><Icon type="home" />首页</Link>
             </Menu.Item>
             <Menu.Item key="/about">
               <Link to="/about"><Icon type="smail-o" />关于</Link>
             </Menu.Item>
-            {/* <Menu.Item key="/me">
-              <Link to="/me/1"><Icon type="smail-o" />我</Link>
-            </Menu.Item>
-            <Menu.Item key="/other">
-              <Link to="/other"><Icon type="smail-o" />他</Link>
-            </Menu.Item>*/}
           </Menu>
         </Col>
         <Col span={8}>
           <Search
             placeholder="输入你想到的关键词"
             style={{ width: '80%' }}
-            onSearch={value => console.log(value)}
+            onSearch={key => dispatch({ type: 'user/search', payload: { key } })}
           />
         </Col>
         <Col span={8}>

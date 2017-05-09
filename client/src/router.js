@@ -8,10 +8,9 @@ import VoteEdit from './routes/VoteEdit.js';
 import About from './routes/About';
 import Me from './routes/Me';
 import Other from './routes/Other';
-
 import Register from './routes/Register.js';
-
 import Redirect from './routes/Redirect.js';
+import Search from './routes/Search.js';
 
 function RouterConfig({ history }) {
   return (
@@ -26,6 +25,7 @@ function RouterConfig({ history }) {
       <Route path="/other" component={Other} />
       <Route path="/register" component={Register} />
       <Route path="/redirect/:id" component={Redirect} />
+      <Route path="/search" component={Search} />
     </Router>
   );
 }

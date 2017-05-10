@@ -9,17 +9,17 @@ const voteSchema = new Schema({
   end_time: Date,   // 投票截止日期
   active_time: Date,
   tag: String,   
-  view: Number, 
-  msg: Number,
-  follow: Number,
-  is_voted: Number,
+  view: {type:Number, default: 0}, 
+  msg: {type:Number, default: 0},
+  follow: {type:Number, default: 0},
+  is_voted: {type:Number, default: 0},
   isfollow: Boolean,
   user: {type: ObjectId, ref: 'User'}, //发起人
   complex: Boolean, //两种布局：带图片／纯文字
   round: {type: Number, default: 1}, // 当前进行至第几轮投票了
   multi: Number, //多轮投票（此轮投票需要选出前几名）－1单轮投票（不排名仅做展示）
   votelist: Array, // 多轮投票，票数加一个字段
-  comments: [{type: ObjectId, ref: 'Comment'}]
+  comments: [{type: ObjectId, ref: 'Comment', default: []}]
 });
 
 //查询vote详情

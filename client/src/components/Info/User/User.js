@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Col, Button } from 'antd';
+import { Card, Col, Button, Row } from 'antd';
 import styles from './User.less';
 
 function User({ user, dispatch, userId, queryId }) {
@@ -36,14 +36,16 @@ function User({ user, dispatch, userId, queryId }) {
 
   return (
     <Card bodyStyle={{ padding: 0 }} className={styles.card}>
-      <Col span={8} className={styles.imgbox} />
-      <Col span={16} className={styles.text}>
-        <h3>{user.name}</h3>
-        <p className={styles.linemore}>{user.desc}</p>
-        <span>关注&nbsp;{user.following_count}&nbsp;&nbsp;|</span>
-        <span>&nbsp;&nbsp;粉丝&nbsp;{user.follower_count}</span>
-        {followbtn}
-      </Col>
+      <Row type="flex" justify="space-between" align="middle">
+        <Col span={8} className={styles.imgbox} style={{ background: `url(${user.avator})` }} />
+        <Col span={16} className={styles.text}>
+          <h3>{user.name}</h3>
+          <p className={styles.linemore}>{user.desc}</p>
+          <span>关注&nbsp;{user.following_count}&nbsp;&nbsp;|</span>
+          <span>&nbsp;&nbsp;粉丝&nbsp;{user.follower_count}</span>
+          {followbtn}
+        </Col>
+      </Row>
     </Card>
   );
 }

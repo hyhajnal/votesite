@@ -30,7 +30,8 @@
     "require-yield": [1],
     "no-console": "off",
     "no-underscore-dangle": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "camelcase": "off"
   },
   "parserOptions": {
     "ecmaFeatures": {

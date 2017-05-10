@@ -30,6 +30,12 @@ class commonController {
 
     ctx.success({ votes, comments, users, topics });
   }
+
+  static async upload(ctx, next){
+    console.log(ctx.req.file);
+    ctx.success('保存成功！');
+  }
+
 }
 
 export default commonController;

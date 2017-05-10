@@ -4,7 +4,7 @@ const ObjectId = Schema.ObjectId;
 
 const commentSchema = new Schema({
   content: String,
-  time: Date,
+  time: {type: Date, default: new Date()},
   star: Number,
   msg: Number,
   pid: String,

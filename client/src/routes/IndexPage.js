@@ -4,6 +4,7 @@ import { Carousel, Row, Col, Radio, Icon } from 'antd';
 import MainLayout from '../components/MainLayout/MainLayout';
 import ArticalItem from '../components/Home/ArticalItem';
 import styles from './IndexPage.less';
+import Nodata from '../components/Common/Nodata';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -124,7 +125,7 @@ function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
             <RadioButton value="create_time">最新</RadioButton>
           </RadioGroup>
         </Row>
-        {article}
+        {article.length > 0 ? article : <div className={styles.nodata}><Nodata /></div> }
       </div>
     </MainLayout>
   );

@@ -1,4 +1,4 @@
-
+import { routerRedux } from 'dva/router';
 import * as voteService from '../services/vote';
 import * as userService from '../services/user';
 
@@ -43,6 +43,10 @@ export default {
     *to_vote({ payload: { voteId, idx } }, { call, put }) {
       yield call(voteService.toVote, { voteId, idx });
       yield put({ type: 'fetch_vote', payload: voteId });
+    },
+    *create_vote({ payload: { vote } }, { call, put }) {
+      const { data } = yield call(voteService.createVote, { vote });
+      yield put(routerRedux.push(`/vote?_id=${data.data}`));
     },
     *to_comment({ payload: { comment } }, { call, put }) {
       yield call(voteService.toComment, comment);

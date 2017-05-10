@@ -4,6 +4,7 @@ import { Icon, Row, Col, Card, Input, Mention, Button, Modal } from 'antd';
 import { Link } from 'dva/router';
 import classnames from 'classnames';
 import styles from './Comment.less';
+import timeFilter from '../../utils/timefilter';
 
 const { toEditorState, toString } = Mention;
 const Nav = Mention.Nav;
@@ -140,7 +141,7 @@ class Comment extends Component {
                 <span className="label-1 gutter-h">
                   <Link to={`/other?id=${comment.from._id}`}>{comment.from.name}</Link>
                 </span>
-                <span className="label-2">{ comment.time }</span>
+                <span className="label-2">{ timeFilter(comment.time) }</span>
               </Col>
               {
                 comment.from._id === userId ?

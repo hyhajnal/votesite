@@ -57,9 +57,12 @@ class MainLayout extends Component {
               <Icon type="up" />
             </Button>
           </BackTop>
-          <Button type="primary" onClick={this.onCollapse} className={styles.right}>
-            <Icon type="right" />
-          </Button>
+          {
+            !user.name ? null :
+            <Button type="primary" onClick={this.onCollapse} className={styles.right}>
+              <Icon type="right" />
+            </Button>
+          }
         </div>
       </Layout>
     );

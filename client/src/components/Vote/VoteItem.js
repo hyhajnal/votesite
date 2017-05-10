@@ -11,7 +11,7 @@ function VoteItem({ index, k, options }) {
     wrapperCol: { span: 14 },
   };
   return (
-    <div key={index}>
+    <div>
       <FormItem
         {...formItemLayout}
         label={
@@ -28,7 +28,7 @@ function VoteItem({ index, k, options }) {
           (<Button
             type="primary" shape="circle" icon="arrow-up" ghost
             size="small" className="gutter-h-m"
-            onClick={() => toup(k)}
+            onClick={() => toup(index)}
           />)
           : (null)
         }
@@ -36,7 +36,7 @@ function VoteItem({ index, k, options }) {
           (<Button
             type="primary" shape="circle" icon="arrow-down" ghost
             size="small" className="gutter-h-m"
-            onClick={() => todown(k)}
+            onClick={() => todown(index)}
           />)
         }
 
@@ -46,8 +46,9 @@ function VoteItem({ index, k, options }) {
         {...formItemLayout}
         label="选项标题"
         hasFeedback
+        key={k}
       >
-        {getFieldDecorator(`title-${index}`, {
+        {getFieldDecorator(`title${k}`, {
           rules: [{ required: true, message: '请输入选项标题' }],
         })(
           <Input placeholder="请输入选项标题" />,
@@ -59,7 +60,7 @@ function VoteItem({ index, k, options }) {
         label="选项描述"
         hasFeedback
       >
-        {getFieldDecorator(`desc-${index}`)(
+        {getFieldDecorator(`desc${k}`)(
           <Input type="textarea" rows={4} placeholder="在此可对该选项进行描述" />,
         )}
       </FormItem>
@@ -68,7 +69,7 @@ function VoteItem({ index, k, options }) {
         {...formItemLayout}
         label="图片上传"
       >
-        {getFieldDecorator(`pic-${index}`, {
+        {getFieldDecorator(`pic${k}`, {
           valuePropName: 'fileList',
           getValueFromEvent: normFile,
         })(

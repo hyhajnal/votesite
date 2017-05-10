@@ -6,7 +6,7 @@ import { Row, Col, Card, Button, Modal, Icon, Spin } from 'antd';
 import styles from './Vote.css';
 import MainLayout from '../components/MainLayout/MainLayout';
 import Comment from '../components/Comment/Comment';
-
+import timeFilter from '../utils/timefilter';
 
 const confirm = Modal.confirm;
 
@@ -16,9 +16,12 @@ function createVoteList(list, isVoted, dispatch, voteId) {
     voteList.push(
       <Col span={6} key={i} style={{ marginBottom: '16px' }} className={classnames({ [styles.votemark]: isVoted === i })}>
         <Card bodyStyle={{ padding: 0 }}>
-          <div className="custom-image">
-            <img alt="example" width="100%" src={vote.pic} />
-          </div>
+          {
+            !vote.pic ? null :
+            <div className="custom-image">
+              <img alt="example" width="100%" src={vote.pic} />
+            </div>
+          }
           <div className="custom-card align-center gutter">
             <h3 className={styles.lineone}>{vote.title}</h3>
             <p className={classnames(styles.linemore, 'align-left', 'gutter-v-m')}>{ vote.desc }</p>
@@ -57,13 +60,12 @@ function showConfirm(dispatch, vote, idx, voteId) {
 function Vote({ location, vote, dispatch, loading, user }) {
   if (!vote.title) return null;
   const { votelist, comments, is_voted } = vote;
-  const time = vote.create_time;
   const voteList = votelist ? createVoteList(votelist, is_voted, dispatch, vote._id) : null;
   return (
     <MainLayout location={location}>
       <Spin spinning={loading} />
       <div style={{ background: '#fff', padding: '30px' }}>
-        <Row type="flex" justify="start">
+        <Row type="flex" justify="space-between">
           <Col>
             <h1>{ vote.title }</h1>
           </Col>
@@ -75,11 +77,11 @@ function Vote({ location, vote, dispatch, loading, user }) {
             <span className="label-1 gutter-h">
               <Link to={`/other?id=${vote.user._id}`}>{ vote.user.name }</Link>
             </span>
-            <span className="label-2">{ time }</span>
+            <span className="label-2">{ timeFilter(vote.create_time, 1) } ~ { vote.end_time ? timeFilter(vote.end_time, 1) : '至今' }</span>
           </Col>
         </Row>
-        <section>
-          { vote.title }
+        <section className="gutter-vl-m">
+          { vote.desc }
         </section>
         <Row gutter={16}>
           {voteList}

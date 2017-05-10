@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Icon, Card } from 'antd';
 import { browserHistory, Link } from 'dva/router';
 import styles from './ArticalItem.css';
+import timeFilter from '../../utils/timefilter';
 
 class ArticalItem extends Component {
 
@@ -38,14 +39,14 @@ class ArticalItem extends Component {
       >
         <div className="card-head">
           <img
-            alt="example" width="30" height="30" className="avator-c"
+            alt="avatar" width="30" height="30" className="avator-c"
             src={post.user.avator}
           />
           <Link to={{ pathname: '/other', query: { id: post.user._id } }}>
             <span className={`${styles.redirect} label-1 gutter-h`}>{ post.user.name }</span>
           </Link>
           <span className="label-2">
-            {time}
+            {timeFilter(time)}
           </span>
         </div>
         <div className="gutter-v">

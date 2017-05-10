@@ -3,6 +3,7 @@ import userModel from '../models/user';
 import commentModel from '../models/comment';
 import voteModel from '../models/vote';
 import topicModel from '../models/topic';
+import msgModel from '../models/msg';
 
 class relationController {
 
@@ -11,10 +12,10 @@ class relationController {
       :ctx.session.userId;
     // 查询 info
     const info = await userModel.findById(queryId);
-    if( ctx.query.otherId && ctx.session && ctx.session.user){
+    if( ctx.query.otherId && ctx.session && ctx.session.userId){
       const relation = await relationModel.findOne({
         userId: ctx.session.userId, otherId: info._id, type: 'user'});
-      info._doc.isfollow = !relation ? false : true;
+      info.isfollow = !relation ? false : true;
     }
     // 查询 vote
     const votes = await voteModel.find({ user: queryId }).populate('user');
@@ -22,35 +23,33 @@ class relationController {
     // 查询 关注用户
     const following_r = await relationModel.find({userId: queryId, type:'user'});
     const followings = [];
-    if(ctx.session && ctx.session.user){
-      const getFollowings = async ()=>{
-        for(let i=0,len=following_r.length;i<len;i++){
-          let following = await userModel.findById(following_r[i].otherId);
-          if( ctx.query.otherId){
-            const relation = await relationModel.findOne({
-              userId: ctx.session.userId, otherId: following._id, type: 'user'});
-            following._doc.isfollow = !relation ? false : true;
-          }
-          followings.push(following._doc);
+    const getFollowings = async ()=>{
+      for(let i=0,len=following_r.length;i<len;i++){
+        let following = await userModel.findById(following_r[i].otherId);
+        if( ctx.query.otherId){
+          const relation = await relationModel.findOne({
+            userId: ctx.session.userId, otherId: following._id, type: 'user'});
+          following.isfollow = !relation ? false : true;
         }
-      };
-    }
+        followings.push(following);
+      }
+    };
+
     // 查询 粉丝
     const follower_r = await relationModel.find({otherId: queryId, type:'user'});
     const followers = [];
-    if(ctx.session && ctx.session.user){
-      const getFollowers = async ()=>{
-        for(let i=0,len=follower_r.length;i<len;i++){
-          let follower = await userModel.findById(follower_r[i].userId);
-          if( ctx.query.otherId){
-            const relation = await relationModel.findOne({
-              userId: ctx.session.userId, otherId: follower._id, type: 'user'});
-            follower._doc.isfollow = !relation ? false : true;
-          }
-          followers.push(follower._doc);
+    const getFollowers = async ()=>{
+      for(let i=0,len=follower_r.length;i<len;i++){
+        let follower = await userModel.findById(follower_r[i].userId);
+        if( ctx.query.otherId){
+          const relation = await relationModel.findOne({
+            userId: ctx.session.userId, otherId: follower._id, type: 'user'});
+          follower.isfollow = !relation ? false : true;
         }
-      };
-    }
+        followers.push(follower);
+      }
+    };
+    
     // 查询 关注的话题
     const topic_r = await relationModel.find({userId: queryId, type: 'topic'});
     const topics = [];
@@ -66,7 +65,7 @@ class relationController {
     const vote_joins = [];
     const getVotejoins = async ()=>{
       for(let i=0,len=votejoin_r.length;i<len;i++){
-        const vote_join = await voteModel.findById(votejoin_r[i].otherId);
+        const vote_join = await voteModel.findById(votejoin_r[i].otherId).populate('user');
         vote_joins.push(vote_join);
       }
     };
@@ -76,21 +75,24 @@ class relationController {
 
     let result;
 
-    // 查询未读消息
-    if(ctx.session && ctx.session.user){
+    if(ctx.session && ctx.session.userId){
       await getFollowers();
       await getFollowings();
       await getTopics();
       await getVotejoins();
+      // 查询未读消息
+      const msgs = await msgModel.find({userId: ctx.session.userId});
+      console.log(msgs);
       result = {
-        info, followings, followers, topics, votes, vote_joins, comments
+        info, followings, followers, topics,
+        votes, vote_joins, comments, msgs
       }
     }else{
       result = {
         info,
         followings: following_r,
         followers: follower_r,
-        topics: topic_r, votes, vote_joins, comments
+        topics: topic_r, votes, vote_joins, comments,
       }
     }
 
@@ -131,6 +133,14 @@ class relationController {
     if (relation.type === 'user'){
       await userModel.findByIdAndUpdate(relation.userId, {$inc: {following_count: 1}});
       await userModel.findByIdAndUpdate(relation.otherId, {$inc: {follower_count: 1}});
+      const user = await userModel.findById(relation.userId);
+      const msg = new msgModel({ 
+        content: ` “${user.name}” 关注了你`, 
+        userId: relation.otherId, 
+        type: 'user',
+        linkId: relation.userId
+      });
+      await msg.save();
     }
     if (relation.type === 'like'){
       await voteModel.findByIdAndUpdate(relation.otherId, {$inc: {follow: 1}});

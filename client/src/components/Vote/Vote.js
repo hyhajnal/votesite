@@ -5,6 +5,7 @@ import {
   InputNumber, Row } from 'antd';
 
 import VoteItem from './VoteItem';
+import voteRs from './voteRs';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -13,7 +14,7 @@ const RadioGroup = Radio.Group;
 const RangePicker = DatePicker.RangePicker;
 
 
-let uuid = 0;
+let uuid = 3;
 class Vote extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +32,8 @@ class Vote extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.warn('Received values of form: ', values);
+        const vote = voteRs(values);
+        this.props.dispatch({ type: 'vote/create_vote', payload: { vote } });
       }
     });
   }
@@ -45,15 +47,11 @@ class Vote extends Component {
 
   remove = (k) => {
     const { form } = this.props;
-    // can use data-binding to get
     const keys = form.getFieldValue('keys');
     console.log(keys);
-    // We need at least one passenger
     if (keys.length === 1) {
       return;
     }
-
-    // can use data-binding to set
     form.setFieldsValue({
       keys: keys.filter(key => key !== k),
     });
@@ -76,21 +74,21 @@ class Vote extends Component {
     return arr;
   }
 
-  toup = (k) => {
+  toup = (index) => {
     const { form } = this.props;
     const keys = form.getFieldValue('keys');
 
     form.setFieldsValue({
-      keys: this.swapItems(keys, k - 1, k - 2),
+      keys: this.swapItems(keys, index, index - 1),
     });
   }
 
-  todown = (k) => {
+  todown = (index) => {
     const { form } = this.props;
     const keys = form.getFieldValue('keys');
 
     form.setFieldsValue({
-      keys: this.swapItems(keys, k - 1, k),
+      keys: this.swapItems(keys, index, index + 1),
     });
   }
 
@@ -165,10 +163,10 @@ class Vote extends Component {
           {...formItemLayout}
           label="投票时间"
         >
-          {getFieldDecorator('create_time', {
+          {getFieldDecorator('time', {
             rules: [{ type: 'array', required: true, message: '请选择投票时间!' }],
           })(
-            <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />,
+            <RangePicker showTime format="YYYY-MM-DD" />,
           )}
         </FormItem>
 
@@ -207,6 +205,28 @@ class Vote extends Component {
     );
   }
 }
-const VoteForm = Form.create()(Vote);
+const VoteForm = Form.create({
+  // onFieldsChange(props, changeFields) {
+  //   props.onChange(changeFields);
+  // },
+  mapPropsToFields() {
+    return {
+      title: { value: '这是一个投票标题' },
+      desc: { value: '这是一个投票描述' },
+      keys: { value: [0, 1, 2, 3] },
+      tag: { value: '58f77875eaba472d05e56add' },
+      mluti: { value: -1 },
+      time_range: { value: [] },
+      title0: { value: 'title0' },
+      title1: { value: 'title1' },
+      title2: { value: 'title2' },
+      title3: { value: 'title3' },
+      desc0: { value: 'title0' },
+      desc1: { value: 'title1' },
+      desc2: { value: 'desc2' },
+      desc3: { value: 'desc3' },
+    };
+  },
+})(Vote);
 
 export default VoteForm;

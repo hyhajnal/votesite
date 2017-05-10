@@ -1,6 +1,8 @@
 import commentModel from '../models/comment';
 import voteModel from '../models/vote';
+import msgModel from '../models/msg';
 import mongoose from 'mongoose';
+import userModel from '../models/user';
 
 class commentController{
 
@@ -50,25 +52,33 @@ class commentController{
   static async create(ctx, next){
     let comment = new commentModel(ctx.request.body);
     comment.save((err) => {
-      if(err) ctx.error(err,' 评论失败！');
+      if(err) return ctx.error(err,' 评论失败！');
     });
     //如果是子评论，父级增加child
-    let vote = voteModel.findById(comment)
+    let vote = await voteModel.findById(comment.voteId);
     if(comment.pid != '-1'){
       let p_comment = await commentModel.findById(comment.pid);
       p_comment.childs.unshift(comment._id);
       p_comment.save( (err) => {
-        if(err) ctx.error(err,'评论失败！');
+        if(err) return ctx.error(err,'评论失败！');
       });
-      console.log(p_comment);
     }else{
       let vote = await voteModel.findById(comment.voteId);
       vote.comments.unshift(comment._id);
       vote.save( (err) => {
-        if(err) ctx.error(err,'评论失败！');
+        if(err) return ctx.error(err,'评论失败！');
       });
-      console.log(vote);
     }
+    //发送消息
+    const user = await userModel.findById(comment.from);
+    const msg = new msgModel({ 
+      content: `在 "${vote.title}" 投票中 “${user.name}” 回复了你 ：“${comment.content}”`, 
+      userId: comment.to, 
+      type: 'reply',
+      linkId: vote._id
+    });
+    await msg.save();
+
     ctx.success(null, '评论成功！');
   }
 

@@ -28,6 +28,16 @@ export function delVote(id) {
   });
 }
 
+export function createVote({ vote }) {
+  return request('/api/vote/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(vote),
+  });
+}
+
 export function editVote({ vote }) {
   return request('/api/vote/edit', {
     method: 'PATCH',

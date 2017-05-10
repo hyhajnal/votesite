@@ -1,15 +1,15 @@
 'use strict';
 
 import Koa from 'koa';
-import routes from './routes';
 import bodyParser from 'koa-bodyparser';
 import convert from 'koa-convert';
 import json from 'koa-json';
+import mongoose from 'mongoose';
 import session from 'koa-session';
 import serve from "koa-static2";
+import routes from './routes';
 import config from './config';
 import response from './middleware/resdata';
-import mongoose from 'mongoose';
 
 const app = new Koa();
 app.keys = ['votesite'];
@@ -26,7 +26,7 @@ app.use(convert(bodyParser()));
 app.use(convert(session(CONFIG, app)));
 //统一response
 app.use(response);
-app.use(serve("static", __dirname + "/assets"));
+app.use(serve("static", __dirname + "/static"));
 //app.use(convert(json()));
 
 mongoose.Promise = global.Promise;

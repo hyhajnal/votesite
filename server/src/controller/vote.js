@@ -4,6 +4,7 @@ import relationModel from '../models/relation';
 import userModel from '../models/user';
 import topicModel from '../models/topic';
 import commentModel from '../models/comment';
+import msgModel from '../models/msg';
 
 class VoteController {
   
@@ -23,7 +24,7 @@ class VoteController {
       sortkey[ctx.query.sortkey] = ctx.query.aesc ? 1: -1;
       list = await voteModel.find(findkey).sort(sortkey).populate('user');
     }else{
-      list = await voteModel.find(findkey).populate('user');
+      list = await voteModel.find(findkey).sort({create_time: -1}).populate('user');
     }
     data = list;
     if(ctx.session && ctx.session.userId){
@@ -51,16 +52,18 @@ class VoteController {
    */
   static async tovote( ctx, next ){
     const { voteId, itemIdx } = ctx.params;
-    const userId = ctx.session.userId;
+    const userId = await ctx.session.userId;
     //voteitem.num++
     let vote = await voteModel.findById(voteId);
     // let v = vote.toJSON();  
-    vote.votelist[parseInt(itemIdx)].num ++;
+    vote.votelist[parseInt(itemIdx)].num += 1;
+    vote.markModified('votelist');
     try {
-      await vote.save()
+      await vote.save();
     } catch(e) {
-      ctx.error(err,'投票失败！');
+      return ctx.error(err,'投票失败！');
     }
+    await vote.save();
 
     //user.vote_join_count++
     await userModel.findByIdAndUpdate(userId, {$inc: {vote_join_count: 1}});
@@ -76,7 +79,7 @@ class VoteController {
     try {
       await relation.save();
     } catch(err) {
-      ctx.error(err,'投票失败！');
+      return ctx.error(err,'投票失败！');
     }
     ctx.success(vote,'投票成功！');
   }
@@ -91,7 +94,7 @@ class VoteController {
     try {
       await vote.save();
     } catch(err) {
-      ctx.error(err,'投票修改失败！');
+      return ctx.error(err,'投票修改失败！');
     }
     ctx.success(null,'投票修改成功');
   }
@@ -102,13 +105,20 @@ class VoteController {
    * @param {String} userId
    */
   static async create( ctx, next ){
-    const { userId } = ctx.request.body;
+    let vote = ctx.request.body;
+    console.log(vote);
+    const userId = ctx.session.userId;
+    const topic = await topicModel.findByIdAndUpdate(vote.tag, {$inc: {vote_count: 1}});
+    const topicId = vote.tag;
     //save vote
-    let vote = new voteModel(ctx.request.body);
+    vote = new voteModel(vote);
     vote.user = userId;
+    vote.tag = topic.name;
+    console.log(vote.tag);
+    console.log(topic.name);
     try { await vote.save();
     } catch(err) {
-      ctx.error(err,'投票创建失败！');
+      return ctx.error(err,'投票创建失败！');
     }
 
     //save relation
@@ -120,13 +130,29 @@ class VoteController {
     let relation = new relationModel(relation_new);
     try { await relation.save();
     } catch(err) {
-      ctx.error(err,'投票创建失败！');
+      return ctx.error(err,'投票创建失败！');
     }
+
+    //相关topic＋1
+    const relations = await relationModel.find({otherId: topicId, type: 'topic'});
+    const sendMsgs = async ()=>{
+        for(let i=0,len=relations.length;i<len;i++){
+          const msg = new msgModel({ 
+            content: ` 你关注的 “${vote.tag}” 话题新增了一个 “${vote.title}” 投票`, 
+            userId: relations[i].userId, 
+            type: 'topic',
+            linkId: vote._id
+          });
+          msg.save();
+        }
+    };
 
     //user.vote_count++
     userModel.findByIdAndUpdate(userId, {$inc: {vote_join_count: 1}});
 
-    ctx.success(null, '投票创建成功！');
+    await sendMsgs();
+
+    ctx.success(vote._id, '投票创建成功！');
   }
 
   /**
@@ -165,7 +191,6 @@ class VoteController {
       }
   }  
     await addFollow();
-    console.log(votedetail.is_voted);
     ctx.success(votedetail);
   }
 

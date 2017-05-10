@@ -6,6 +6,7 @@ import MainLayout from '../components/MainLayout/MainLayout';
 import ArticalItem from '../components/Home/ArticalItem';
 import User from '../components/Info/User/User';
 import Message from '../components/Info/Message/Message';
+import Nodata from '../components/Common/Nodata';
 
 function Search({ location, votes, topics, users, dispatch, comments }) {
   const posts = [];
@@ -34,6 +35,10 @@ function Search({ location, votes, topics, users, dispatch, comments }) {
   return (
     <MainLayout location={location}>
       <div className={styles.wrap}>
+        { topics.length === 0 && userArray.length === 0
+          && posts.length === 0 && msgs.length === 0 ?
+            <Nodata /> : null
+        }
         { topics.length > 0 ?
           <div>
             <h2 className={styles.title}>相关话题</h2>

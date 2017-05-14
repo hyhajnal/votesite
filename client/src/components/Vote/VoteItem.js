@@ -80,6 +80,12 @@ function VoteItem({ index, k, options }) {
           </Upload>,
         )}
       </FormItem>
+
+      <FormItem style={{ display: 'none' }}>
+        {getFieldDecorator(`item${k}`)(
+          <Input />,
+        )}
+      </FormItem>
     </div>
   );
 }

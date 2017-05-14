@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Row, Col, Card, Button, Modal, Icon, Spin } from 'antd';
+import { Row, Col, Card, Button, Modal, Icon, Spin, Input } from 'antd';
 import styles from './Vote.css';
 import MainLayout from '../components/MainLayout/MainLayout';
 import Comment from '../components/Comment/Comment';
@@ -14,12 +14,12 @@ function createVoteList(list, isVoted, dispatch, voteId) {
   const voteList = [];
   list.forEach((vote, i) => {
     voteList.push(
-      <Col span={6} key={i} style={{ marginBottom: '16px' }} className={classnames({ [styles.votemark]: isVoted === i })}>
+      <Col span={4} key={i} style={{ marginBottom: '16px' }} className={classnames({ [styles.votemark]: isVoted === i })}>
         <Card bodyStyle={{ padding: 0 }}>
           {
             !vote.pic ? null :
             <div className="custom-image">
-              <img alt="example" width="100%" src={vote.pic} />
+              <img alt="pic" width="100%" src={vote.pic} />
             </div>
           }
           <div className="custom-card align-center gutter">
@@ -31,7 +31,7 @@ function createVoteList(list, isVoted, dispatch, voteId) {
                   type="primary"
                   onClick={showConfirm.bind(null, dispatch, vote, i, voteId)}
                 >投票</Button>
-                : (<span className={styles.cardnum}>{vote.num}</span>) }
+                : (<span className={styles.cardnum}>{vote.num}票</span>) }
             </p>
           </div>
           {
@@ -57,6 +57,15 @@ function showConfirm(dispatch, vote, idx, voteId) {
   });
 }
 
+function handleComment(e, dispatch, { from, to, pid, voteId }) {
+  if (e.keyCode === 13) {
+    const content = e.target.value;
+    e.target.value = '';
+    const comment = { content, from, to, pid, voteId, create_time: new Date() };
+    dispatch({ type: 'vote/to_comment', payload: { comment } });
+  }
+}
+
 function Vote({ location, vote, dispatch, loading, user }) {
   if (!vote.title) return null;
   const { votelist, comments, is_voted } = vote;
@@ -67,7 +76,8 @@ function Vote({ location, vote, dispatch, loading, user }) {
       <div style={{ background: '#fff', padding: '30px' }}>
         <Row type="flex" justify="space-between">
           <Col>
-            <h1>{ vote.title }</h1>
+            <h1>{ vote.title }
+            </h1>
           </Col>
           <Col>
             <img
@@ -80,8 +90,16 @@ function Vote({ location, vote, dispatch, loading, user }) {
             <span className="label-2">{ timeFilter(vote.create_time, 1) } ~ { vote.end_time ? timeFilter(vote.end_time, 1) : '至今' }</span>
           </Col>
         </Row>
-        <section className="gutter-vl-m">
+        <section className="gutter-v-m">
           { vote.desc }
+          <Row type="flex" align="center" className="gutter-vl-m">
+            <span className={styles.tag}>第{vote.round}轮</span>
+            <span className={styles.tag}>进行中</span>
+            <span className={styles.tag}>取前{vote.mluti && vote.mluti > 0 ? vote.mluti : 1}名</span>
+            {vote.user._id !== user._id ? null :
+            <Link to="/voteEdit"><Button type="primary" ghost>编辑</Button></Link>
+            }
+          </Row>
         </section>
         <Row gutter={16}>
           {voteList}
@@ -89,11 +107,18 @@ function Vote({ location, vote, dispatch, loading, user }) {
       </div>
 
       <div style={{ background: '#fff', padding: '30px' }}>
+        <Input
+          type="textarea" rows={4} placeholder="发表你的评论, 按下Enter即可发送"
+          style={{ marginBottom: '20px' }}
+          onKeyDown={e => handleComment(e, dispatch,
+            { voteId: vote._id, pid: -1, from: user._id, to: vote.user },
+          )}
+        />
         {
           comments.length > 0 ?
           comments.map((comment, i) =>
             <Comment
-              comment={comment} key={i} top={i === 0}
+              comment={comment} key={i}
               userId={user._id} voteId={vote._id} dispatch={dispatch}
             />) : null
         }

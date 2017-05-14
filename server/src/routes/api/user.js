@@ -9,7 +9,7 @@ router
   .get('/reply', isLogin, userController.reply) //查询收到的回复
   .get('/vote', isLogin, userController.vote) //查询发起的投票
   .post('/login', userController.login)
-  .get('/logout', userController.logout)
+  .get('/logout', isLogin, userController.logout)
   .post('/reg', userController.register);
 
   export default router;

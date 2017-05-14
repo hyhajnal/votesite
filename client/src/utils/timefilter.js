@@ -1,13 +1,13 @@
 import moment from 'moment';
 
 export default (time, flag) => {
-  const y = parseInt(moment(time).format('YYYY'), 10);
-  const m = parseInt(moment(time).format('MM'), 10);
-  const d = parseInt(moment(time).format('DD'), 10);
-  const h = parseInt(moment(time).format('HH'), 10);
-  const mm = parseInt(moment(time).format('MM'), 10);
-  const s = parseInt(moment(time).format('SS'), 10);
-  return parseInt(moment(new Date()).format('YYYY'), 10) - y < 5 && !flag ?
-  moment([y, m, d, h, mm, s]).fromNow() :
+  const y = moment(time).format('YYYY');
+  const m = moment(time).format('MM');
+  const d = moment(time).format('DD');
+  const h = moment(time).format('HH');
+  const mm = moment(time).format('mm');
+  const s = moment(time).format('ss');
+  return parseInt(moment(new Date()).format('YYYY'), 10) - parseInt(y, 10) < 5 && !flag ?
+  moment(`${y}${m}${d}${h}${mm}${s}`, 'YYYYMMDDHHmmss').fromNow() :
   moment(time).format('YYYY-MM-DD hh时');
 };

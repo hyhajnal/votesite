@@ -3,6 +3,7 @@ import userModel from '../models/user';
 import commentModel from '../models/comment';
 import voteModel from '../models/vote';
 import topicModel from '../models/topic';
+import fs from 'fs';
 
 class commonController {
 
@@ -33,7 +34,13 @@ class commonController {
 
   static async upload(ctx, next){
     console.log(ctx.req.file);
-    ctx.success('保存成功！');
+    const file = ctx.req.file;
+    const type =  file.mimetype.split('/')[1];
+    await fs.renameSync(`src/static/upload/${file.filename}`, `src/static/upload/${ctx.session.userId}.${type}`);
+    let user = await userModel.findById(ctx.session.userId);
+    user.avator = `http://localhost:3000/static/upload/${ctx.session.userId}.${type}`;
+    await user.save();
+    ctx.success(null, '保存成功！');
   }
 
 }

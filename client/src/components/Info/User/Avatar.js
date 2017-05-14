@@ -3,8 +3,7 @@ import { Upload, Icon, message } from 'antd';
 import styles from './Avatar.less';
 
 function getBase64(img, callback) {
-  // const reader = new FileReader();
-  let reader;
+  const reader = new FileReader();
   reader.addEventListener('load', () => callback(reader.result));
   reader.readAsDataURL(img);
 }

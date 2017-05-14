@@ -9,19 +9,21 @@ import User from '../components/Info/User/User';
 import Message from '../components/Info/Message/Message';
 import UserEdit from '../components/Info/User/UserEdit';
 import Nodata from '../components/Common/Nodata';
+import timeFilter from '../utils/timefilter';
 
 const TabPane = Tabs.TabPane;
 
-function Me({ location, others, params, dispatch, userId }) {
+function Me({ location, others, params, dispatch, user }) {
   if (others.votes === undefined) return null;
-  if (!userId) {
+  if (!user) {
     const error = { msg: '需要登录才能操作！' };
     throw error;
   }
   function callback(key) {
     browserHistory.push(`/me/${key}`);
   }
-  const { votes, followings, followers, topics, vote_joins, comments, info, msgs } = others;
+  const { votes, followings, followers, topics, vote_joins, comments, msgs } = others;
+  const userId = user._id;
   const posts = [];
   const postsJoin = [];
   votes.forEach((vote, i) =>
@@ -57,7 +59,7 @@ function Me({ location, others, params, dispatch, userId }) {
 
   topics.map((item, index) => {
     return (
-      <Col className={styles.topic} key={index + item} >
+      <Col className={styles.topic} key={index} >
         <img src={item.pic} width="32" height="32" alt={item.name} />
         {item.name}&nbsp;&nbsp;{item.vote_count}
       </Col>
@@ -66,9 +68,9 @@ function Me({ location, others, params, dispatch, userId }) {
 
 
   const msgArray = [];
-  msgs.forEach((msg) => {
+  msgs.forEach((msg, i) => {
     msgArray.push(
-      <div className={styles.msg}>
+      <div className={styles.msg} key={i}>
         <p className="gutter-v-m">
           <span className={styles.tag}>{msg.type}</span>&nbsp;&nbsp;
           {
@@ -76,7 +78,7 @@ function Me({ location, others, params, dispatch, userId }) {
             : <span className={styles.isread}>未读</span>
           }
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <span className="label-2">{msg.time}</span>
+          <span className="label-2">{timeFilter(msg.time)}</span>
         </p>
         <p className="gutter-v-m">{msg.content}</p>
       </div>,
@@ -88,7 +90,7 @@ function Me({ location, others, params, dispatch, userId }) {
       <div className={styles.content}>
         <Tabs defaultActiveKey={params.id} activeKey={params.id} onChange={callback}>
           <TabPane tab="个人资料" key="1">
-            <UserEdit user={info} dispatch={dispatch} />
+            <UserEdit user={user} dispatch={dispatch} />
           </TabPane>
           <TabPane tab={`消息 ${msgArray.length}`} key="8">
             {msgArray.length > 0 ? msgArray : <Nodata />}
@@ -135,7 +137,7 @@ function Me({ location, others, params, dispatch, userId }) {
 function mapStateToProps(state) {
   return {
     loading: state.loading.models.user,
-    userId: state.user.user._id,
+    user: state.user.user,
     others: state.user.all,
   };
 }

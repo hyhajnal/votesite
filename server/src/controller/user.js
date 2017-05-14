@@ -29,7 +29,7 @@ class UserController {
     const { name, desc, oldpsd, newpsd } = ctx.request.body;
     user.name = name;
     user.desc = desc;
-    if(user.psd !== oldpsd){
+    if(oldpsd && user.psd !== oldpsd){
       return ctx.error(null, '原密码不正确');
     }
     if(newpsd) user.psd = newpsd;

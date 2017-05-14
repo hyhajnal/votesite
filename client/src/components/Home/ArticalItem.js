@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Icon, Card } from 'antd';
+import { Icon, Card, message } from 'antd';
 import { browserHistory, Link } from 'dva/router';
 import styles from './ArticalItem.css';
 import timeFilter from '../../utils/timefilter';
@@ -14,12 +14,13 @@ class ArticalItem extends Component {
     });
   };
 
-  follow = (relation, voteId, dispatch) => {
-    dispatch({ type: 'vote/tofollow', payload: { relation, voteId } });
+  follow = (relation, post, dispatch) => {
+    if (relation.userId === post.user) return message.warn('不好意思，不能给自己的投票点赞！');
+    dispatch({ type: 'vote/tofollow', payload: { relation, voteId: post._id } });
   }
 
-  unfollow = (relation, voteId, dispatch) => {
-    dispatch({ type: 'vote/unfollow', payload: { relation, voteId } });
+  unfollow = (relation, post, dispatch) => {
+    dispatch({ type: 'vote/unfollow', payload: { relation, voteId: post._id } });
   }
 
   render() {
@@ -66,14 +67,14 @@ class ArticalItem extends Component {
           <span className={styles.footlabel}>
             {post.isfollow ?
               <Icon
-                className="gutter-h"
+                className="gutter-h like"
                 type="heart"
-                onClick={() => this.unfollow(relation, post._id, dispatch)}
+                onClick={() => this.unfollow(relation, post, dispatch)}
               /> :
               <Icon
                 className="gutter-h"
                 type="heart-o"
-                onClick={() => this.follow(relation, post._id, dispatch)}
+                onClick={() => this.follow(relation, post, dispatch)}
               />
             }
             { post.follow }

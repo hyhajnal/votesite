@@ -26,11 +26,9 @@ class relationController {
     const getFollowings = async ()=>{
       for(let i=0,len=following_r.length;i<len;i++){
         let following = await userModel.findById(following_r[i].otherId);
-        if( ctx.query.otherId){
           const relation = await relationModel.findOne({
             userId: ctx.session.userId, otherId: following._id, type: 'user'});
           following.isfollow = !relation ? false : true;
-        }
         followings.push(following);
       }
     };
@@ -41,11 +39,9 @@ class relationController {
     const getFollowers = async ()=>{
       for(let i=0,len=follower_r.length;i<len;i++){
         let follower = await userModel.findById(follower_r[i].userId);
-        if( ctx.query.otherId){
           const relation = await relationModel.findOne({
             userId: ctx.session.userId, otherId: follower._id, type: 'user'});
           follower.isfollow = !relation ? false : true;
-        }
         followers.push(follower);
       }
     };
@@ -82,7 +78,6 @@ class relationController {
       await getVotejoins();
       // 查询未读消息
       const msgs = await msgModel.find({userId: ctx.session.userId});
-      console.log(msgs);
       result = {
         info, followings, followers, topics,
         votes, vote_joins, comments, msgs
@@ -127,7 +122,7 @@ class relationController {
     console.log(ctx.request.body);
     let relation = new relationModel(ctx.request.body);
     await relation.save((err) => {
-      if(err) ctx.error(err, "操作失败！");
+      if(err) return ctx.error(err, "关注失败！");
     });
     
     if (relation.type === 'user'){
@@ -149,13 +144,13 @@ class relationController {
       await commentModel.findByIdAndUpdate(relation.otherId, {$inc: {star: 1}});
     }
 
-    ctx.success(null, "操作成功！");
+    ctx.success(null, "关注成功！");
   }
 
   static async unfollow(ctx, next){
     const relation = ctx.request.body;
     await relationModel.findOneAndRemove(relation, (err) => {
-      if(err) ctx.error(err, '取消操作失败！');
+      if(err) return ctx.error(err, '取消关注失败！');
     });
     if (relation.type === 'user'){
       await userModel.findByIdAndUpdate(relation.userId, {$inc: {following_count: -1}});
@@ -167,7 +162,7 @@ class relationController {
     if (relation.type === 'comment'){
       await commentModel.findByIdAndUpdate(relation.otherId, {$inc: {star: -1}});
     }
-    ctx.success(null, "取消操作成功！");
+    ctx.success(null, "取消关注成功！");
   }
 }
 

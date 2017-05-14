@@ -6,6 +6,7 @@ import styles from './Other.less';
 import ArticalItem from '../components/Home/ArticalItem';
 import User from '../components/Info/User/User';
 import Message from '../components/Info/Message/Message';
+import Nodata from '../components/Common/Nodata';
 
 const TabPane = Tabs.TabPane;
 
@@ -101,17 +102,18 @@ function Other({ location, others, dispatch, userId }) {
         <Tabs defaultActiveKey="2" >
           <TabPane tab={`ta的粉丝 ${followerArray.length}`} key="2">
             <Row gutter={24}>
-              {followerArray}
+              {followerArray.length > 0 ? followerArray : <Nodata />}
             </Row>
           </TabPane>
           <TabPane tab={`ta关注的用户 ${followingArray.length}`} key="3">
             <Row gutter={24}>
-              {followingArray}
+              {followingArray.length > 0 ? followingArray : <Nodata />}
             </Row>
           </TabPane>
           <TabPane tab={`ta关注的话题 ${topics.length}`} key="4">
             <Row type="flex" align="start" style={{ margin: '20px' }}>
               {
+                topics.length > 0 ?
                 topics.map((item, index) => {
                   return (
                     <Col className={styles.topic} key={index + item} >
@@ -119,16 +121,20 @@ function Other({ location, others, dispatch, userId }) {
                       {item.name}&nbsp;&nbsp;{item.vote_count}
                     </Col>
                   );
-                })
+                }) : <Nodata />
               }
             </Row>
           </TabPane>
-          <TabPane tab={`ta发起的投票 ${posts.length}`} key="5">{posts}</TabPane>
-          <TabPane tab={`ta参与的投票 ${postsJoin.length}`} key="6">{postsJoin}</TabPane>
+          <TabPane tab={`ta发起的投票 ${posts.length}`} key="5">
+            {posts.length > 0 ? posts : <Nodata />}
+          </TabPane>
+          <TabPane tab={`ta参与的投票 ${postsJoin.length}`} key="6">
+            {postsJoin > 0 ? postsJoin : <Nodata />}
+          </TabPane>
           <TabPane tab={`ta发布的评论 ${msgs.length}`} key="7">
-            <ul>
-              {msgs}
-            </ul>
+            { msgs.length > 0 ?
+              <ul>{msgs}</ul> : <Nodata />
+            }
           </TabPane>
         </Tabs>
       </div>

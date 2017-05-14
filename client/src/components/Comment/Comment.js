@@ -1,6 +1,6 @@
 import { uniqWith as _uniqWith, isEqual as _isEqual } from 'lodash';
 import React, { Component } from 'react';
-import { Icon, Row, Col, Card, Input, Mention, Button, Modal } from 'antd';
+import { Icon, Row, Col, Card, Mention, Button, Modal, message } from 'antd';
 import { Link } from 'dva/router';
 import classnames from 'classnames';
 import styles from './Comment.less';
@@ -59,20 +59,12 @@ class Comment extends Component {
   }
 
   handleChildComment = (dispatch, { from, to, pid, voteId }) => {
+    if (to === from) return message.warn('不好意思，自己不能评论自己！');
+    this.setState({ value: toEditorState('') });
     const reg = new RegExp(`@${this.state.selectName}`, 'g');
     const content = toString(this.state.value).replace(reg, '').trim();
     const comment = { content, from, to, pid, voteId, create_time: new Date() };
     dispatch({ type: 'vote/to_comment', payload: { comment } });
-    this.setState({ value: toEditorState('') });
-  }
-
-
-  handleComment = (e, dispatch, { from, to, pid, voteId }) => {
-    if (e.keyCode === 13) {
-      const content = e.target.value;
-      const comment = { content, from, to, pid, voteId, create_time: new Date() };
-      dispatch({ type: 'vote/to_comment', payload: { comment } });
-    }
   }
 
   handleDelete = (dispatch, comment, voteId) => {
@@ -97,7 +89,7 @@ class Comment extends Component {
   }
 
   render() {
-    const { comment, top, brother, dispatch, userId, voteId } = this.props;
+    const { comment, brother, dispatch, userId, voteId } = this.props;
     const { open, suggestions } = this.state;
     const relation = {
       userId,
@@ -118,15 +110,6 @@ class Comment extends Component {
     }
     return (
       <div>
-        {top ? (
-          <Input
-            type="textarea" rows={4} placeholder="发表你的评论, 按下Enter即可发送"
-            style={{ marginBottom: '20px' }}
-            onKeyDown={e => this.handleComment(e, dispatch,
-              { voteId, pid: -1, from: userId, to: comment.to._id },
-            )}
-          />) : null
-        }
         <Card
           style={{ width: '100%', marginBottom: '20px' }}
           className={classnames('card', { [styles.childcard]: brother && brother.length > 0 })}
@@ -182,7 +165,7 @@ class Comment extends Component {
               <span className={styles.footlabel}>
                 {comment.isfollow ?
                   <Icon
-                    className="gutter-h"
+                    className="gutter-h like"
                     type="heart"
                     onClick={() => this.unfollow(relation, dispatch, voteId)}
                   /> :

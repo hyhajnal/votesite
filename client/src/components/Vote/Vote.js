@@ -5,7 +5,7 @@ import {
   InputNumber, Row } from 'antd';
 
 import VoteItem from './VoteItem';
-import voteRs from './voteRs';
+import { createFormat, editFormat } from './voteRs';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -14,7 +14,7 @@ const RadioGroup = Radio.Group;
 const RangePicker = DatePicker.RangePicker;
 
 
-let uuid = 3;
+let uuid = 0;
 class Vote extends Component {
   constructor(props) {
     super(props);
@@ -32,8 +32,14 @@ class Vote extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const vote = voteRs(values);
-        this.props.dispatch({ type: 'vote/create_vote', payload: { vote } });
+        if (this.props.vote.title) {
+          this.props.dispatch({
+            type: 'vote/edit_vote',
+            payload: { vote: createFormat(values, 1), id: this.props.vote._id },
+          });
+        } else {
+          this.props.dispatch({ type: 'vote/create_vote', payload: { vote: createFormat(values) } });
+        }
       }
     });
   }
@@ -153,7 +159,7 @@ class Vote extends Component {
           })(
             <Select placeholder="投票属于下列哪个话题呢？">
               { topics.map((topic, i) =>
-                <Option value={topic._id} key={i}>{ topic.name }</Option>,
+                <Option value={topic.name} key={i}>{ topic.name }</Option>,
               ) }
             </Select>,
           )}
@@ -174,7 +180,7 @@ class Vote extends Component {
           {...formItemLayout}
           label="投票类型"
         >
-          {getFieldDecorator('mluti', {
+          {getFieldDecorator('multi', {
             rules: [
               { required: true, message: '请选择!' },
             ],
@@ -206,26 +212,8 @@ class Vote extends Component {
   }
 }
 const VoteForm = Form.create({
-  // onFieldsChange(props, changeFields) {
-  //   props.onChange(changeFields);
-  // },
-  mapPropsToFields() {
-    return {
-      title: { value: '这是一个投票标题' },
-      desc: { value: '这是一个投票描述' },
-      keys: { value: [0, 1, 2, 3] },
-      tag: { value: '58f77875eaba472d05e56add' },
-      mluti: { value: -1 },
-      time_range: { value: [] },
-      title0: { value: 'title0' },
-      title1: { value: 'title1' },
-      title2: { value: 'title2' },
-      title3: { value: 'title3' },
-      desc0: { value: 'title0' },
-      desc1: { value: 'title1' },
-      desc2: { value: 'desc2' },
-      desc3: { value: 'desc3' },
-    };
+  mapPropsToFields(props) {
+    if (props.vote.title) return editFormat(props.vote);
   },
 })(Vote);
 

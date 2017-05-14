@@ -1,4 +1,5 @@
 import { routerRedux } from 'dva/router';
+import { message } from 'antd';
 import * as userService from '../services/user';
 
 export default {
@@ -25,16 +26,23 @@ export default {
       yield put({ type: 'save', payload: { type: 'all', data: data.data } });
     },
     *tofollow({ payload: { relation, id } }, { call, put }) {
-      yield call(userService.tofollow, relation);
+      const { data } = yield call(userService.tofollow, relation);
+      if (data.success) {
+        message.warn(data.msg);
+      }
       yield put({ type: 'fetch_all', payload: id });
     },
     *unfollow({ payload: { relation, id } }, { call, put }) {
-      yield call(userService.unfollow, relation);
+      const { data } = yield call(userService.unfollow, relation);
+      if (data.success) {
+        message.warn(data.msg);
+      }
       yield put({ type: 'fetch_all', payload: id });
     },
     *reg({ payload: { user } }, { call, put }) {
       const { data } = yield call(userService.reg, user);
       if (data.success) {
+        message.warn(data.msg);
         yield put(routerRedux.push(`/redirect/${data.data.accountId}`));
       } else {
         throw data;
@@ -50,7 +58,10 @@ export default {
       }
     },
     *logout(action, { call, put }) {
-      yield call(userService.logout);
+      const { data } = yield call(userService.logout);
+      if (data.success) {
+        message.success(data.msg);
+      }
       yield put({ type: 'save', payload: { type: 'user', data: {} } });
     },
     *edit({ payload: { user } }, { call, put }) {

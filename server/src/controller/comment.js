@@ -14,8 +14,8 @@ class commentController{
     const getList = async ()=>{
       for(let i=0,len=list.length;i<len;i++){
         const relation = await relationModel.find({userId, otherId: list[i]._id, type: 'comment'});
-        list[i]._doc.isfollow = relation !== null ? true : false;
-        commentlist.push(list[i]._doc);
+        list[i].isfollow = relation !== null ? true : false;
+        commentlist.push(list[i]);
       }
     };
     await getList ();
@@ -28,7 +28,7 @@ class commentController{
     comment.content = new_comment.content;
     try{ await comment.save();
     }catch(err){
-      ctx.error(err, '评论修改失败！');
+      return ctx.error(err, '评论修改失败！');
     }
     ctx.success(null, '评论修改成功！');
   }
@@ -36,17 +36,17 @@ class commentController{
   static async delete(ctx, next){
     const { id, pid } = ctx.params;
     commentModel.findByIdAndRemove(id, (err) => {
-      if(err) return ctx.error(err,'投票删除失败！')
+      if(err) return ctx.error(err,'评论删除失败！')
     });
     // 如果是子投票需要从父级那边删除
     if(pid != '-1'){
       commentModel.update({_id: pid},{
         $pull:{ childs: id}
       }, (err) => {
-      if(err) ctx.error(err,'投票删除失败！');
+      if(err) return ctx.error(err,'评论删除失败！');
     });
     }
-    ctx.success(null, '投票删除成功！');
+    ctx.success(null, '评论删除成功！');
   }
 
   static async create(ctx, next){
@@ -86,7 +86,7 @@ class commentController{
     　commentModel.findByIdAndUpdate(ctx.params.id, {
         $inc: {star: 1}},
         (err) => {
-          if(err) ctx.error(err,'点赞失败！');
+          if(err) return ctx.error(err,'点赞失败！');
       });
       ctx.success(null, '点赞成功！');
   }
@@ -95,7 +95,7 @@ class commentController{
     　commentModel.findByIdAndUpdate(ctx.params.id, {
         $inc: {star: -1}},
          (err) => {
-          if(err) ctx.error(err,'取消点赞失败！');
+          if(err) return ctx.error(err,'取消点赞失败！');
       });
       ctx.success(null, '取消点赞成功！');
   }

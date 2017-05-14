@@ -1,9 +1,14 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Menu, Icon, Button, Row, Col, Input } from 'antd';
+import { Menu, Icon, Button, Row, Col, Input, message } from 'antd';
 import { Link } from 'dva/router';
 import { connect } from 'dva';
 import styles from './Header.css';
+
+function onSearch({ dispatch, key }) {
+  if (key === '') return message.warn('你还没输关键词！');
+  dispatch({ type: 'user/search', payload: { key: key.trim() } });
+}
 
 function Header({ collapsedCls, location, user, dispatch }) {
   const headCls = classNames(styles.header, collapsedCls);
@@ -32,7 +37,7 @@ function Header({ collapsedCls, location, user, dispatch }) {
           <Search
             placeholder="输入你想到的关键词"
             style={{ width: '80%' }}
-            onSearch={key => dispatch({ type: 'user/search', payload: { key } })}
+            onSearch={key => onSearch({ key, dispatch })}
           />
         </Col>
         <Col span={8}>

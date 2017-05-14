@@ -1,4 +1,5 @@
 import { routerRedux } from 'dva/router';
+import { message } from 'antd';
 import * as voteService from '../services/vote';
 import * as userService from '../services/user';
 
@@ -41,19 +42,38 @@ export default {
       });
     },
     *to_vote({ payload: { voteId, idx } }, { call, put }) {
-      yield call(voteService.toVote, { voteId, idx });
+      const { data } = yield call(voteService.toVote, { voteId, idx });
+      if (data.success) {
+        message.warn(data.msg);
+      }
       yield put({ type: 'fetch_vote', payload: voteId });
     },
     *create_vote({ payload: { vote } }, { call, put }) {
       const { data } = yield call(voteService.createVote, { vote });
+      if (data.success) {
+        message.warn(data.msg);
+      }
+      yield put(routerRedux.push(`/vote?_id=${data.data}`));
+    },
+    *edit_vote({ payload: { vote, id } }, { call, put }) {
+      const { data } = yield call(voteService.editVote, { vote, id });
+      if (data.success) {
+        message.warn(data.msg);
+      }
       yield put(routerRedux.push(`/vote?_id=${data.data}`));
     },
     *to_comment({ payload: { comment } }, { call, put }) {
-      yield call(voteService.toComment, comment);
+      const { data } = yield call(voteService.toComment, comment);
+      if (data.success) {
+        message.warn(data.msg);
+      }
       yield put({ type: 'fetch_vote', payload: comment.voteId });
     },
     *delete_comment({ payload: { comment, voteId } }, { call, put }) {
-      yield call(voteService.delComment, comment._id, comment.pid);
+      const { data } = yield call(voteService.delComment, comment._id, comment.pid);
+      if (data.success) {
+        message.warn(data.msg);
+      }
       yield put({ type: 'fetch_vote', payload: voteId });
     },
     *fetch_topics(action, { call, put }) {
@@ -61,7 +81,10 @@ export default {
       yield put({ type: 'save_topics', payload: data.data });
     },
     *tofollow({ payload: { relation, voteId } }, { call, put }) {
-      yield call(userService.tofollow, relation);
+      const { data } = yield call(userService.tofollow, relation);
+      if (data.success) {
+        message.warn(data.msg);
+      }
       if (relation.type === 'comment') {
         yield put({ type: 'fetch_vote', payload: voteId });
       }
@@ -70,7 +93,10 @@ export default {
       }
     },
     *unfollow({ payload: { relation, voteId } }, { call, put }) {
-      yield call(userService.unfollow, relation);
+      const { data } = yield call(userService.unfollow, relation);
+      if (data.success) {
+        message.warn(data.msg);
+      }
       if (relation.type === 'comment') {
         yield put({ type: 'fetch_vote', payload: voteId });
       }

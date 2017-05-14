@@ -36,7 +36,7 @@ function User({ user, dispatch, userId, queryId }) {
 
   return (
     <Card bodyStyle={{ padding: 0 }} className={styles.card}>
-      <Row type="flex" justify="space-between" align="middle">
+      <Row type="flex" justify="space-between" align="middle" className={styles.user}>
         <Col span={8} className={styles.imgbox} style={{ background: `url(${user.avator})` }} />
         <Col span={16} className={styles.text}>
           <h3>{user.name}</h3>

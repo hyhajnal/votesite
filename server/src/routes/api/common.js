@@ -5,15 +5,16 @@ import commonController from '../../controller/common';
 const router = new Router();
 // const upload = multer({ dest: 'static/upload/' });
 
-const storage = multer.diskStorage({
-  destination: 'src/static/upload',
-  filename: function (req, file, cb) {
-    console.log(req.cookie);
-    var fileFormat = (file.mimetype).split("/");
-    cb(null, 'avator.' + fileFormat[1]);
-  }
-});
-const upload = multer({ storage: storage });
+// const storage = multer.diskStorage({
+//   destination: 'src/static/upload',
+//   filename: function (ctx, file, cb) {
+//     var fileFormat = (file.mimetype).split("/");
+//     cb(null, 'avator.' + fileFormat[1]);
+//   }
+// });
+// const upload = multer({ storage: storage });
+
+const upload = multer({ dest: 'src/static/upload/' });
 
 router 
   .get('/search/:key', commonController.search)

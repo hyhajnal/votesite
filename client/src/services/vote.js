@@ -38,9 +38,12 @@ export function createVote({ vote }) {
   });
 }
 
-export function editVote({ vote }) {
-  return request('/api/vote/edit', {
-    method: 'PATCH',
+export function editVote({ vote, id }) {
+  return request(`/api/vote/edit/${id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(vote),
   });
 }

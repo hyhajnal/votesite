@@ -89,14 +89,22 @@ class VoteController {
   * @param {Object} vote
   */
   static async edit( ctx, next ){
-    let vote = voteModel.findById(ctx.body.vote._id);
-    vote = ctx.body.vote;
+    const { title, desc, votelist, create_time, end_time, multi, tag } = ctx.request.body;
+    let vote = await voteModel.findById(ctx.params.id);
+    const topic = await topicModel.findOneAndUpdate({ name: tag }, {$inc: {vote_count: 1}});
+    vote.title = title;
+    vote.desc = desc;
+    vote.multi = multi;
+    vote.create_time = create_time;
+    vote.end_time = end_time;
+    vote.tag = tag;
+    vote.votelist = votelist;
     try {
       await vote.save();
     } catch(err) {
       return ctx.error(err,'投票修改失败！');
     }
-    ctx.success(null,'投票修改成功');
+    ctx.success(vote._id,'投票修改成功');
   }
 
   /**
@@ -106,16 +114,12 @@ class VoteController {
    */
   static async create( ctx, next ){
     let vote = ctx.request.body;
-    console.log(vote);
     const userId = ctx.session.userId;
-    const topic = await topicModel.findByIdAndUpdate(vote.tag, {$inc: {vote_count: 1}});
-    const topicId = vote.tag;
+    const topic = await topicModel.findOneAndUpdate({ name: vote.tag }, {$inc: {vote_count: 1}});
+    const topicId = topic._id;
     //save vote
     vote = new voteModel(vote);
     vote.user = userId;
-    vote.tag = topic.name;
-    console.log(vote.tag);
-    console.log(topic.name);
     try { await vote.save();
     } catch(err) {
       return ctx.error(err,'投票创建失败！');
@@ -203,14 +207,14 @@ class VoteController {
     const { userId, voteId } = ctx.params;
     //删除投票
     voteModel.remove({_id: voteId},(err) => {
-      if(err) ctx.error(err,'投票删除失败！')
+      if(err) return ctx.error(err,'投票删除失败！')
     });
 
     //user.vote_count --
     userModel.findByIdAndUpdate(userId, 
       {$inc: {vote_count: -1}},
       (err) => {
-          if(err) ctx.error(err,'user.vote_count-- 失败！')
+          if(err) return ctx.error(err,'user.vote_count-- 失败！')
     });   
     //user.vote_join_count --
     const relation_list = await relationModel.find({voteId: voteId, type:'vote_join'});
@@ -218,12 +222,12 @@ class VoteController {
       userModel.findByIdAndUpdate(userId, 
         {$inc: {vote_join_count: -1}},
         (err) => {
-          if(err) ctx.error(err,'user.vote_join_count-- 失败！')
+          if(err) return ctx.error(err,'user.vote_join_count-- 失败！')
         }); 
     });
     //关系解除
     relationModel.remove({otherId: voteId}, (err) => {
-      if(err) ctx.error(err,'关系解除失败！')
+      if(err) return ctx.error(err,'关系解除失败！')
     });
 
     ctx.success(null, '投票删除成功！');

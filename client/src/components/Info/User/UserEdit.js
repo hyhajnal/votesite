@@ -159,7 +159,9 @@ class UserEditForm extends Component {
             </Col>
             <Col span={6}>
               <FormItem>
-                {getFieldDecorator('avator')(
+                {getFieldDecorator('avator', {
+                  initialValue: user.avator,
+                })(
                   <Avatar
                     pic={user.avator}
                     savename={Math.random().toString(36).substr(2)}

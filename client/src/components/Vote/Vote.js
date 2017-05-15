@@ -19,12 +19,24 @@ class Vote extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      multi: -1,
+      multi: this.props.form.getFieldValue('multi') ? this.props.form.getFieldValue('multi') : -1,
     };
   }
 
-  changeMulti = (e) => {
+  changeMulti2 = (value) => {
+    this.setState({ multi: value });
+    const { form } = this.props;
+    form.setFieldsValue({
+      multi: value,
+    });
+  }
+
+  changeMulti1 = (e) => {
     this.setState({ multi: e.target.value });
+    const { form } = this.props;
+    form.setFieldsValue({
+      multi: e.target.value,
+    });
   }
 
 
@@ -32,7 +44,6 @@ class Vote extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
         if (this.props.vote) {
           this.props.dispatch({
             type: 'vote/edit_vote',
@@ -104,7 +115,6 @@ class Vote extends Component {
     const keys = getFieldValue('keys');
 
     const options = {
-      voteId: this.props.vote._id,
       keys,
       getFieldDecorator,
       normFile: this.normFile,
@@ -180,14 +190,17 @@ class Vote extends Component {
               { required: true, message: '请选择!' },
             ],
           })(
-            <RadioGroup onChange={this.changeMulti}>
+            <RadioGroup onChange={this.changeMulti1}>
               <RadioButton value={-1} >不限制结果数量</RadioButton>
               <RadioButton value={1} >限制结果数量</RadioButton>
             </RadioGroup>,
           )}
           {
             this.state.multi === -1 ? null :
-            <InputNumber min={1} max={10} defaultValue={1} style={{ marginLeft: '10px' }} />
+            <InputNumber
+              min={1} max={10} defaultValue={1}
+              style={{ marginLeft: '10px' }} onChange={this.changeMulti2}
+            />
           }
         </FormItem>
 

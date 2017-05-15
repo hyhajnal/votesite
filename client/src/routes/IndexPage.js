@@ -96,7 +96,7 @@ function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
                   src="https://upload-images.jianshu.io/upload_images/1980684-23785feb7da2370e.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/375/h/300"
                   width="32" height="32" alt="全部"
                 />
-                全部&nbsp;&nbsp;{posts.length}
+                全部&nbsp;&nbsp;
               </Col>
             </Radio>
             {
@@ -141,7 +141,7 @@ function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
           <div className={styles.nodata}><Nodata /></div> : article }
         <Row type="flex" align="center" className="gutter-vl-m">
           {
-            !loading ?
+            !loading && article.length > 0 ?
               <Button type="primary" onClick={() => getMore(dispatch)} disabled={article.length % LIMIT !== 0}>
                 { article.length % LIMIT === 0 ? '加载更多' : '没有更多了' }
               </Button> : null

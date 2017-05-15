@@ -8,7 +8,8 @@ import './index.css';
 const app = dva({
   history: browserHistory,
   onError(data) {
-    message.error(data.msg);
+    console.log(data);
+    if (data.msg) message.error(data.msg);
   },
 });
 

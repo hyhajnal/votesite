@@ -23,8 +23,8 @@ export default {
   },
   effects: {
     *fetch_list({ payload: { query, page } }, { call, put, select }) {
-      query = !query ? '' : query;
-      const { data } = yield call(voteService.fetchList, { query, page });
+      const q = !query ? '' : query;
+      const { data } = yield call(voteService.fetchList, { q, page });
       let posts = yield select(state => state.vote.posts);
       if (page > 1) {
         posts = posts.concat(data.data);
@@ -51,35 +51,35 @@ export default {
     *to_vote({ payload: { voteId, idx } }, { call, put }) {
       const { data } = yield call(voteService.toVote, { voteId, idx });
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
       }
       yield put({ type: 'fetch_vote', payload: voteId });
     },
     *create_vote({ payload: { vote } }, { call, put }) {
       const { data } = yield call(voteService.createVote, { vote });
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
       }
       yield put(routerRedux.push(`/vote?_id=${data.data}`));
     },
     *edit_vote({ payload: { vote, id } }, { call, put }) {
       const { data } = yield call(voteService.editVote, { vote, id });
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
       }
       yield put(routerRedux.push(`/vote?_id=${data.data}`));
     },
     *to_comment({ payload: { comment } }, { call, put }) {
       const { data } = yield call(voteService.toComment, comment);
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
       }
       yield put({ type: 'fetch_vote', payload: comment.voteId });
     },
     *delete_comment({ payload: { comment, voteId } }, { call, put }) {
-      const { data } = yield call(voteService.delComment, comment._id, comment.pid);
+      const { data } = yield call(voteService.delComment, comment._id, comment.pid, voteId);
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
       }
       yield put({ type: 'fetch_vote', payload: voteId });
     },
@@ -90,25 +90,25 @@ export default {
     *tofollow({ payload: { relation, voteId } }, { call, put }) {
       const { data } = yield call(userService.tofollow, relation);
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
       }
       if (relation.type === 'comment') {
         yield put({ type: 'fetch_vote', payload: voteId });
       }
       if (relation.type === 'like' || relation.type === 'topic') {
-        yield put({ type: 'fetch_list' });
+        yield put({ type: 'fetch_list', payload: { page: 1, query: null } });
       }
     },
     *unfollow({ payload: { relation, voteId } }, { call, put }) {
       const { data } = yield call(userService.unfollow, relation);
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
       }
       if (relation.type === 'comment') {
         yield put({ type: 'fetch_vote', payload: voteId });
       }
       if (relation.type === 'like' || relation.type === 'topic') {
-        yield put({ type: 'fetch_list' });
+        yield put({ type: 'fetch_list', payload: { page: 1, query: null } });
       }
     },
   },

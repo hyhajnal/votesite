@@ -65,8 +65,8 @@ export function toStar(commentId) {
   return request(`/api/comment/star/${commentId}`);
 }
 
-export function delComment(commentId, pid) {
-  return request(`/api/comment/delete/${commentId}/${pid}`, {
+export function delComment(commentId, pid, voteId) {
+  return request(`/api/comment/delete/${commentId}/${pid}/${voteId}`, {
     method: 'DELETE',
   });
 }

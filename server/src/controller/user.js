@@ -79,9 +79,9 @@ class UserController {
   static async logout(ctx){
     ctx.session.userId = null;
     // cookie 设置过期
-    ctx.cookies.set('siteuser', '', {
-      expires: new Date('2016-02-15'),  // cookie失效时间
-    });
+    // ctx.cookies.set('test', '', {
+    //   expires: new Date('2016-02-15'),  // cookie失效时间
+    // });
     ctx.success(null, 'logout');
   }
 
@@ -97,7 +97,7 @@ class UserController {
     } catch(err){
       ctx.error(err, "注册失败！");
     }
-    ctx.success(user);
+    ctx.success(user, '注册成功！');
   }
 
 }

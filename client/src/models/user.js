@@ -28,21 +28,21 @@ export default {
     *tofollow({ payload: { relation, id } }, { call, put }) {
       const { data } = yield call(userService.tofollow, relation);
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
       }
       yield put({ type: 'fetch_all', payload: id });
     },
     *unfollow({ payload: { relation, id } }, { call, put }) {
       const { data } = yield call(userService.unfollow, relation);
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
       }
       yield put({ type: 'fetch_all', payload: id });
     },
     *reg({ payload: { user } }, { call, put }) {
       const { data } = yield call(userService.reg, user);
       if (data.success) {
-        message.warn(data.msg);
+        message.success(data.msg);
         yield put(routerRedux.push(`/redirect/${data.data.accountId}`));
       } else {
         throw data;
@@ -51,6 +51,7 @@ export default {
     *login({ payload: { user } }, { call, put }) {
       const { data } = yield call(userService.login, user);
       if (data.success) {
+        window.localStorage.setItem('login', 1);
         yield put({ type: 'save', payload: { type: 'user', data: data.data } });
         yield put(routerRedux.push('/'));
       } else {
@@ -60,6 +61,7 @@ export default {
     *logout(action, { call, put }) {
       const { data } = yield call(userService.logout);
       if (data.success) {
+        window.localStorage.setItem('login', 0);
         message.success(data.msg);
       }
       yield put({ type: 'save', payload: { type: 'user', data: {} } });
@@ -78,8 +80,9 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       let markMe = 0;
+      // !(/^(register)?(redirect\/\w+)?(login)?$/.test(pathname))
       history.listen(({ pathname, query }) => {
-        if (document.cookie) {
+        if (parseInt(window.localStorage.getItem('login'), 10)) {
           dispatch({ type: 'fetch', payload: { type: 'user' } });
         }
         if (pathname === '/other' && markMe !== query.id) {

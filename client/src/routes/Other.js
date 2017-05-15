@@ -129,7 +129,7 @@ function Other({ location, others, dispatch, userId }) {
             {posts.length > 0 ? posts : <Nodata />}
           </TabPane>
           <TabPane tab={`ta参与的投票 ${postsJoin.length}`} key="6">
-            {postsJoin > 0 ? postsJoin : <Nodata />}
+            {postsJoin.length > 0 ? postsJoin : <Nodata />}
           </TabPane>
           <TabPane tab={`ta发布的评论 ${msgs.length}`} key="7">
             { msgs.length > 0 ?

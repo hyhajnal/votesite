@@ -34,18 +34,20 @@ class commentController{
   }
 
   static async delete(ctx, next){
-    const { id, pid } = ctx.params;
-    commentModel.findByIdAndRemove(id, (err) => {
-      if(err) return ctx.error(err,'评论删除失败！')
+    const { id, pid, voteId } = ctx.params;
+    commentModel.findByIdAndRemove(id, err => {
+      if(err) return ctx.error(err,'评论删除失败！');
     });
+
     // 如果是子投票需要从父级那边删除
     if(pid != '-1'){
       commentModel.update({_id: pid},{
         $pull:{ childs: id}
       }, (err) => {
-      if(err) return ctx.error(err,'评论删除失败！');
-    });
+        if(err) return ctx.error(err,'评论删除失败！');
+      });
     }
+    await voteModel.findByIdAndUpdate(voteId, {$inc: {msg: -1}});
     ctx.success(null, '评论删除成功！');
   }
 
@@ -55,6 +57,7 @@ class commentController{
       if(err) return ctx.error(err,' 评论失败！');
     });
     //如果是子评论，父级增加child
+    await voteModel.findByIdAndUpdate(comment.voteId, {$inc: {msg: 1}});
     let vote = await voteModel.findById(comment.voteId);
     if(comment.pid != '-1'){
       let p_comment = await commentModel.findById(comment.pid);

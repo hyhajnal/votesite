@@ -95,7 +95,7 @@ function Vote({ location, vote, dispatch, loading, user }) {
           <Row type="flex" align="center" className="gutter-vl-m">
             <span className={styles.tag}>第{vote.round}轮</span>
             <span className={styles.tag}>进行中</span>
-            <span className={styles.tag}>取前{vote.mluti && vote.mluti > 0 ? vote.mluti : 1}名</span>
+            <span className={styles.tag}>取前{vote.multi && vote.multi > 0 ? vote.multi : 1}名</span>
             {vote.user._id !== user._id ? null :
             <Link to="/voteEdit"><Button type="primary" ghost>编辑</Button></Link>
             }

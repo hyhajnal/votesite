@@ -15,16 +15,18 @@ class VoteController {
    * @param {Boolean} aesc 降序默认
    */
   static async list( ctx, next ){
+    let { page, limit } = ctx.params;
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
     let findkey = ctx.query.tag ? 
                   { tag: ctx.query.tag } : {};
-    let sortkey = {};
-    let list;
-    let data = null;
+    let sortkey = {}; let list; let data = null;
+
     if(ctx.query.sortkey){
       sortkey[ctx.query.sortkey] = ctx.query.aesc ? 1: -1;
-      list = await voteModel.find(findkey).sort(sortkey).populate('user');
+      list = await voteModel.find(findkey).sort(sortkey).skip((page-1)*limit).limit(limit).populate('user');
     }else{
-      list = await voteModel.find(findkey).sort({create_time: -1}).populate('user');
+      list = await voteModel.find(findkey).sort({create_time: -1}).skip((page-1)*limit).limit(limit).populate('user');
     }
     data = list;
     if(ctx.session && ctx.session.userId){

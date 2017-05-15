@@ -1,13 +1,16 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Carousel, Row, Col, Radio, Icon } from 'antd';
+import { Carousel, Row, Col, Radio, Icon, Button, Spin } from 'antd';
 import MainLayout from '../components/MainLayout/MainLayout';
 import ArticalItem from '../components/Home/ArticalItem';
 import styles from './IndexPage.less';
 import Nodata from '../components/Common/Nodata';
+import { LIMIT } from '../constants';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+
+let page = 1;
 
 const listquery = {
   sortkey: 'create_time',
@@ -27,20 +30,28 @@ function toquery(obj) {
 }
 
 function onChange2(e, dispatch) {
+  page = 1;
   listquery.tag = e.target.value;
-  console.log(toquery(listquery));
   dispatch({
     type: 'vote/fetch_list',
-    payload: toquery(listquery),
+    payload: { query: toquery(listquery), page },
   });
 }
 
 function onChange1(e, dispatch) {
+  page = 1;
   listquery.sortkey = e.target.value;
-  console.log(toquery(listquery));
   dispatch({
     type: 'vote/fetch_list',
-    payload: toquery(listquery),
+    payload: { query: toquery(listquery), page },
+  });
+}
+
+function getMore(dispatch) {
+  page += 1;
+  dispatch({
+    type: 'vote/fetch_list',
+    payload: { query: toquery(listquery), page },
   });
 }
 
@@ -125,7 +136,18 @@ function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
             <RadioButton value="create_time">最新</RadioButton>
           </RadioGroup>
         </Row>
-        {article.length > 0 ? article : <div className={styles.nodata}><Nodata /></div> }
+        <div className="align-center gutter-vl-m"><Spin spinning={loading} /></div>
+        {article.length === 0 && !loading ?
+          <div className={styles.nodata}><Nodata /></div> : article }
+        <Row type="flex" align="center" className="gutter-vl-m">
+          {
+            !loading ?
+              <Button type="primary" onClick={() => getMore(dispatch)} disabled={article.length % LIMIT !== 0}>
+                { article.length % LIMIT === 0 ? '加载更多' : '没有更多了' }
+              </Button> : null
+          }
+          <div><Spin spinning={loading} /></div>
+        </Row>
       </div>
     </MainLayout>
   );

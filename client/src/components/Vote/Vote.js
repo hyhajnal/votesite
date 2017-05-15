@@ -32,7 +32,8 @@ class Vote extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        if (this.props.vote.title) {
+        console.log(values);
+        if (this.props.vote) {
           this.props.dispatch({
             type: 'vote/edit_vote',
             payload: { vote: createFormat(values, 1), id: this.props.vote._id },
@@ -42,13 +43,6 @@ class Vote extends Component {
         }
       }
     });
-  }
-  normFile = (e) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
   }
 
   remove = (k) => {
@@ -110,6 +104,7 @@ class Vote extends Component {
     const keys = getFieldValue('keys');
 
     const options = {
+      voteId: this.props.vote._id,
       keys,
       getFieldDecorator,
       normFile: this.normFile,
@@ -119,7 +114,7 @@ class Vote extends Component {
     };
     const formItems = keys.map((k, index) => {
       return (
-        <VoteItem options={options} k={k} index={index} key={k} />
+        <VoteItem options={options} k={k} index={index} key={k} form={this.props.form} />
       );
     });
 
@@ -213,7 +208,7 @@ class Vote extends Component {
 }
 const VoteForm = Form.create({
   mapPropsToFields(props) {
-    if (props.vote.title) return editFormat(props.vote);
+    if (props.vote) return editFormat(props.vote);
   },
 })(Vote);
 

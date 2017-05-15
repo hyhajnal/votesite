@@ -67,6 +67,7 @@ export default {
     *edit({ payload: { user } }, { call, put }) {
       const { data } = yield call(userService.edit, user);
       yield put({ type: 'save', payload: { type: 'user', data: data.data } });
+      yield put({ type: 'fetch_all' });
     },
     *search({ payload: { key } }, { call, put }) {
       const { data } = yield call(userService.search, key);

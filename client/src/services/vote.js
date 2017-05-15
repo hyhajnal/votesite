@@ -1,9 +1,10 @@
 import request from '../utils/request';
+import { LIMIT } from '../constants';
 
 // Vote
 
-export function fetchList(query) {
-  return request(`/api/vote/list${query}`);
+export function fetchList({ query, page }) {
+  return request(`/api/vote/list/${page}/${LIMIT}${query}`);
 }
 
 export function fetchVote(_id) {

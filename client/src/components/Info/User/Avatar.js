@@ -26,9 +26,14 @@ class Avatar extends React.Component {
   };
 
   handleChange = (info) => {
+    const { k, setPic } = this.props;
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl => this.setState({ imageUrl }));
+      getBase64(info.file.originFileObj, (imageUrl) => {
+        this.setState({ imageUrl });
+        if (k) {
+          setPic(k, info.file.response.data);
+        }
+      });
     }
   }
 
@@ -40,6 +45,7 @@ class Avatar extends React.Component {
         name="avatar"
         showUploadList={false}
         action="/api/common/upload"
+        data={{ savename: this.props.savename }}
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >

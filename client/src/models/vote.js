@@ -11,7 +11,7 @@ export default {
     topics: [],
   },
   reducers: {
-    save(state, { payload: { data: posts } }) {
+    save(state, { payload: { posts } }) {
       return { ...state, posts };
     },
     save_vote(state, { payload: { data: vote } }) {
@@ -22,13 +22,20 @@ export default {
     },
   },
   effects: {
-    *fetch_list({ payload }, { call, put }) {
-      payload = !payload ? '' : payload;
-      const { data } = yield call(voteService.fetchList, payload);
+    *fetch_list({ payload: { query, page } }, { call, put, select }) {
+      query = !query ? '' : query;
+      const { data } = yield call(voteService.fetchList, { query, page });
+      let posts = yield select(state => state.vote.posts);
+      if (page > 1) {
+        posts = posts.concat(data.data);
+        console.log(posts);
+      } else {
+        posts = data.data;
+      }
       yield put({
         type: 'save',
         payload: {
-          data: data.data,
+          posts,
         },
       });
     },
@@ -109,7 +116,7 @@ export default {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
         if (pathname === '/' || pathname === '/search') {
-          dispatch({ type: 'fetch_list' });
+          dispatch({ type: 'fetch_list', payload: { page: 1 } });
           dispatch({ type: 'fetch_topics' });
         }
         if (pathname === '/vote') {

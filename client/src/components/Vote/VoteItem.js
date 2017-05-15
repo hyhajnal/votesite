@@ -1,15 +1,25 @@
 import React from 'react';
 import {
-  Form, Button, Upload, Icon, Input } from 'antd';
+  Form, Button, Input } from 'antd';
+import Avatar from '../Info/User/Avatar';
 
 const FormItem = Form.Item;
 
-function VoteItem({ index, k, options }) {
+function VoteItem({ index, k, options, form }) {
   const { keys, remove, toup, todown, getFieldDecorator, normFile } = options;
   const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 14 },
   };
+  function setPic(key, value) {
+    form.setFieldsValue({
+      [key]: value,
+    });
+  }
+  function getPic(key) {
+    return form.getFieldValue(key);
+  }
+  const pic_uuid = Math.random().toString(36).substr(2);
   return (
     <div>
       <FormItem
@@ -73,11 +83,12 @@ function VoteItem({ index, k, options }) {
           valuePropName: 'fileList',
           getValueFromEvent: normFile,
         })(
-          <Upload action="/upload.do" listType="picture">
-            <Button>
-              <Icon type="upload" /> 点击上传
-            </Button>
-          </Upload>,
+          <Avatar
+            k={`pic${k}`}
+            setPic={setPic}
+            savename={`${pic_uuid}pic${k}`}
+            pic={getPic(`pic${k}`)}
+          />,
         )}
       </FormItem>
 

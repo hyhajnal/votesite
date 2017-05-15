@@ -26,9 +26,10 @@ class UserController {
    */
   static async edit( ctx, next ){
     let user = await userModel.findById(ctx.session.userId);
-    const { name, desc, oldpsd, newpsd } = ctx.request.body;
+    const { name, desc, oldpsd, newpsd, avator } = ctx.request.body;
     user.name = name;
     user.desc = desc;
+    user.avator = avator;
     if(oldpsd && user.psd !== oldpsd){
       return ctx.error(null, '原密码不正确');
     }
@@ -76,12 +77,11 @@ class UserController {
   }
 
   static async logout(ctx){
-    console.log(new Date(getExpTime(-1)));
     ctx.session.userId = null;
     // cookie 设置过期
-    ctx.cookies.set('siteuser', '222', {
-        expires: new Date(getExpTime(-1))
-      });
+    ctx.cookies.set('siteuser', '', {
+      expires: new Date('2016-02-15'),  // cookie失效时间
+    });
     ctx.success(null, 'logout');
   }
 

@@ -41,9 +41,12 @@ function Header({ collapsedCls, location, user, dispatch }) {
           />
         </Col>
         <Col span={8}>
-          <Link to="voteEdit"><Button type="danger gutter-h-m" ghost >发起投票</Button></Link>
           { user.name ?
-            <span>你好,{user.name}<em className={styles.logout} onClick={logout}>退出</em></span> :
+            <span>
+              <Link to="voteCreate"><Button type="danger gutter-h-m" ghost >发起投票</Button></Link>
+              <span>你好,{user.name}<em className={styles.logout} onClick={logout}>退出</em></span>
+            </span>
+             :
             <Link to="login"><Button type="primary gutter-h-m">登录</Button></Link>
           }
         </Col>

@@ -11,6 +11,12 @@ class UserEditForm extends Component {
     confirmDirty: false,
     edit: false,
   };
+  setPic = (key, value) => {
+    const form = this.props.form;
+    form.setFieldsValue({
+      [key]: value,
+    });
+  }
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -43,6 +49,7 @@ class UserEditForm extends Component {
   changeEdit = (edit) => {
     this.setState({ edit });
   }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { user } = this.props;
@@ -73,8 +80,8 @@ class UserEditForm extends Component {
       <Row className="gutter-vl-m">
         { !edit ? <Info user={user} changeEdit={this.changeEdit} /> :
         <div>
-          <Col span={18}>
-            <Form onSubmit={this.handleSubmit}>
+          <Form onSubmit={this.handleSubmit}>
+            <Col span={18}>
               <FormItem
                 {...formItemLayout}
                 label="昵称"
@@ -149,11 +156,19 @@ class UserEditForm extends Component {
                   取消
                 </Button>
               </FormItem>
-            </Form>
-          </Col>
-          <Col span={6}>
-            <Avatar pic={user.avator} />
-          </Col>
+            </Col>
+            <Col span={6}>
+              <FormItem>
+                {getFieldDecorator('avator')(
+                  <Avatar
+                    pic={user.avator}
+                    savename={Math.random().toString(36).substr(2)}
+                    k="avator" setPic={this.setPic}
+                  />,
+                )}
+              </FormItem>
+            </Col>
+          </Form>
         </div>
         }
       </Row>

@@ -4,14 +4,28 @@ import styles from './Users.css';
 import UsersComponent from '../components/Users/Users';
 import MainLayout from '../components/MainLayout/MainLayout';
 
-function Users({ location }) {
+function Users({ location, dispatch, list, loading }) {
   return (
     <MainLayout location={location}>
       <div className={styles.normal}>
-        <UsersComponent />
+        {
+          !list[0] ? null :
+          <UsersComponent
+            dispatch={dispatch}
+            list={list}
+            loading={loading}
+          />
+        }
       </div>
     </MainLayout>
   );
 }
 
-export default connect()(Users);
+function mapStateToProps(state) {
+  return {
+    loading: state.loading.models.user,
+    list: state.user.list,
+  };
+}
+
+export default connect(mapStateToProps)(Users);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Row, Form, Input } from 'antd';
 import { connect } from 'dva';
+import { Link } from 'dva/router';
 // import styles from './Register.less';
 import LogLayout from '../components/MainLayout/LogLayout';
 
@@ -99,6 +100,7 @@ class Register extends Component {
             <Button type="primary" size="large" onClick={this.handleOk} loading={this.props.loading}>
               注册
             </Button>
+            <p><Link to="/login">已有帐号？快去登录吧！</Link></p>
           </Row>
         </form>
       </LogLayout>

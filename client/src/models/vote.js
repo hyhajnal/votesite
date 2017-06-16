@@ -24,7 +24,7 @@ export default {
   effects: {
     *fetch_list({ payload: { query, page } }, { call, put, select }) {
       const q = !query ? '' : query;
-      const { data } = yield call(voteService.fetchList, { q, page });
+      const { data } = yield call(voteService.fetchList, { query: q, page });
       let posts = yield select(state => state.vote.posts);
       if (page > 1) {
         posts = posts.concat(data.data);
@@ -54,6 +54,20 @@ export default {
         message.success(data.msg);
       }
       yield put({ type: 'fetch_vote', payload: voteId });
+    },
+    *changestate_vote({ payload: { voteId, tostart } }, { call, put }) {
+      const { data } = yield call(voteService.changestateVote, { voteId, tostart });
+      if (data.success) {
+        message.success(data.msg);
+      }
+      yield put({ type: 'fetch_vote', payload: voteId });
+    },
+    *del_vote({ payload: { voteId } }, { call, put }) {
+      const { data } = yield call(voteService.delVote, { voteId });
+      if (data.success) {
+        message.success(data.msg);
+      }
+      yield put(routerRedux.push('/'));
     },
     *create_vote({ payload: { vote } }, { call, put }) {
       const { data } = yield call(voteService.createVote, { vote });
@@ -125,7 +139,7 @@ export default {
             payload: query._id,
           });
         }
-        if (pathname === '/voteEdit') {
+        if (pathname === '/voteEdit' || pathname === '/voteCreate') {
           dispatch({ type: 'fetch_topics' });
         }
       });

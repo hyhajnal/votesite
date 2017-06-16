@@ -18,6 +18,7 @@
     "chai": "^3.5.0",
     "eslint": "*",
     "eslint-config-airbnb": "*",
+    "kcors": "^2.2.1",
     "mocha": "*",
     "mockjs": "^1.0.1-beta3",
     "nodemon": "*",
@@ -26,6 +27,7 @@
   },
   "dependencies": {
     "bcrypt-as-promised": "^1.1.0",
+    "copy-to": "^2.0.1",
     "import-dir": "0.0.1",
     "kerberos": "0.0.18",
     "koa": "^2.0.0-alpha.3",

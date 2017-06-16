@@ -1,6 +1,7 @@
 import React from 'react';
 import { Upload, Icon, message } from 'antd';
 import styles from './Avatar.less';
+import { API } from '../../../constants';
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -22,7 +23,7 @@ function beforeUpload(file) {
 
 class Avatar extends React.Component {
   state = {
-    imageUrl: this.props.pic,
+    imageUrl: `${API}/${this.props.pic}`,
   };
 
   handleChange = (info) => {
@@ -44,7 +45,7 @@ class Avatar extends React.Component {
         className={styles.uploader}
         name="avatar"
         showUploadList={false}
-        action="/api/common/upload"
+        action={`${API}/common/upload`}
         data={{ savename: this.props.savename }}
         beforeUpload={beforeUpload}
         onChange={this.handleChange}

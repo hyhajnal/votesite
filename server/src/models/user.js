@@ -9,7 +9,7 @@ const userSchema = new Schema({
   desc: String,
   psd: String ,
   isfollow: Boolean,
-  avator: {type:String, default: 'http://localhost:3000/static/avator.jpg' },
+  avator: {type:String, default: 'static/avator.jpg' },
   following_count: {type: Number, default: 0}, //关注用户数
   follower_count: {type: Number, default: 0}, //粉丝数
   topic_count: {type: Number, default: 0}, //关注的话题

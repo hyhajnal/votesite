@@ -31,6 +31,9 @@ function Header({ collapsedCls, location, user, dispatch }) {
             <Menu.Item key="/about">
               <Link to="/about"><Icon type="smail-o" />关于</Link>
             </Menu.Item>
+            <Menu.Item key="/users">
+              <Link to="/users"><Icon type="smail-o" />列表</Link>
+            </Menu.Item>
           </Menu>
         </Col>
         <Col span={8}>

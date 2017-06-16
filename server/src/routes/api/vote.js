@@ -10,5 +10,6 @@ router
   .post('/create', isLogin, voteController.create) //发起一个投票
   .get('/topics', voteController.topics) //获取热门topic
   .get('/detail/:voteId', voteController.detail) //获取投票详情
-  .delete('/delete/:userId/:voteId', isLogin, voteController.delete) //删除投票
+  .get('/delvote/:voteId', isLogin, voteController.delete) //删除投票
+  .get('/endvote/:voteId/:tostart', isLogin, voteController.endvote) //结束投票
   export default router;

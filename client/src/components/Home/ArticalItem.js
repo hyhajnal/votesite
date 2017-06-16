@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import { Icon, Card, message } from 'antd';
-import { browserHistory, Link } from 'dva/router';
+// import { browserHistory, Link } from 'dva/router';
+import { hashHistory, Link } from 'dva/router';
 import styles from './ArticalItem.css';
 import timeFilter from '../../utils/timefilter';
+import { API } from '../../constants';
 
 class ArticalItem extends Component {
 
   redirect = (_id) => {
-    browserHistory.push({
+    // browserHistory.push({
+    //   pathname: '/vote',
+    //   query: { _id },
+    // });
+    hashHistory.push({
       pathname: '/vote',
-      query: { _id },
-      //state: { fromDashboard: true }
+      search: `?_id=${_id}`,
     });
   };
 
@@ -31,7 +36,7 @@ class ArticalItem extends Component {
       type: 'like',
     };
     if (!post || !post.user) return null;
-    const time = post.create_time;
+    const time = post.post_time;
     return (
       // <Link to={{ pathname: "/vote", query: {_id: post._id} }}>
       <Card
@@ -41,7 +46,7 @@ class ArticalItem extends Component {
         <div className="card-head">
           <img
             alt="avatar" width="30" height="30" className="avator-c"
-            src={post.user.avator}
+            src={`${API}/${post.user.avator}`}
           />
           <Link to={{ pathname: '/other', query: { id: post.user._id } }}>
             <span className={`${styles.redirect} label-1 gutter-h`}>{ post.user.name }</span>

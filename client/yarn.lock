@@ -4837,9 +4837,9 @@ ripemd160@0.2.0:
   version "0.2.0"
   resolved "http://registry.npm.taobao.org/ripemd160/download/ripemd160-0.2.0.tgz#2bf198bde167cacfa51c0a928e84b68bbe171fce"
 
-roadhog@^0.5.2:
-  version "0.5.3"
-  resolved "http://registry.npm.taobao.org/roadhog/download/roadhog-0.5.3.tgz#4083c30c2fe29cca7e8bdf3e0114929f91e36b87"
+roadhog@^0.5.4:
+  version "0.5.4"
+  resolved "http://registry.npm.taobao.org/roadhog/download/roadhog-0.5.4.tgz#c656a6cfe738d88133e0d45c251f51b88709ca13"
   dependencies:
     atool-monitor "^0.3.4"
     autoprefixer "^6.5.4"

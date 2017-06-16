@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Col, Button, Row } from 'antd';
 import styles from './User.less';
+import { API } from '../../../constants';
 
 function User({ user, dispatch, userId, queryId }) {
   const relation = {
@@ -37,7 +38,7 @@ function User({ user, dispatch, userId, queryId }) {
   return (
     <Card bodyStyle={{ padding: 0 }} className={styles.card}>
       <Row type="flex" justify="space-between" align="middle" className={styles.user}>
-        <Col span={8} className={styles.imgbox} style={{ background: `url(${user.avator})` }} />
+        <Col span={8} className={styles.imgbox} style={{ background: `url(${API}/${user.avator})` }} />
         <Col span={16} className={styles.text}>
           <h3>{user.name}</h3>
           <p className={styles.linemore}>{user.desc}</p>

@@ -7,6 +7,7 @@ import ArticalItem from '../components/Home/ArticalItem';
 import User from '../components/Info/User/User';
 import Message from '../components/Info/Message/Message';
 import Nodata from '../components/Common/Nodata';
+import { API } from '../constants';
 
 const TabPane = Tabs.TabPane;
 
@@ -79,7 +80,7 @@ function Other({ location, others, dispatch, userId }) {
   return (
     <MainLayout location={location}>
       <Row className={styles.info} span={20}>
-        <img alt="" src={info.avator} />
+        <img alt="" src={`${API}/${info.avator}`} />
         <h1>{info.name}</h1>
         <p className={styles.desc}><em>
           {

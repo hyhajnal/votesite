@@ -5,6 +5,7 @@ const ObjectId = Schema.ObjectId;
 const voteSchema = new Schema({
   title: String,
   desc: String,
+  post_time: {type:Date, default: new Date()}, //投票发布日期
   create_time: Date, // 投票创建日期
   end_time: Date,   // 投票截止日期
   active_time: Date,

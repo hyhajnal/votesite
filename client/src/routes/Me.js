@@ -1,7 +1,8 @@
 import React from 'react';
 import { Tabs, Col, Row } from 'antd';
 import { connect } from 'dva';
-import { browserHistory } from 'dva/router';
+// import { browserHistory } from 'dva/router';
+import { hashHistory } from 'dva/router';
 import MainLayout from '../components/MainLayout/MainLayout';
 import styles from './Me.less';
 import ArticalItem from '../components/Home/ArticalItem';
@@ -13,14 +14,18 @@ import timeFilter from '../utils/timefilter';
 
 const TabPane = Tabs.TabPane;
 
-function Me({ location, others, params, dispatch, user }) {
+function Me({ location, others, dispatch, user }) {
   if (others.votes === undefined) return null;
   if (!user) {
     const error = { msg: '需要登录才能操作！' };
     throw error;
   }
   function callback(key) {
-    browserHistory.push(`/me/${key}`);
+    hashHistory.replace({
+      pathname: '/me',
+      search: `?key=${key}`,
+    });
+    // browserHistory.push(`/me/${key}`);
   }
   const { votes, followings, followers, topics, vote_joins, comments, msgs } = others;
   const userId = user._id;
@@ -88,7 +93,11 @@ function Me({ location, others, params, dispatch, user }) {
   return (
     <MainLayout location={location}>
       <div className={styles.content}>
-        <Tabs defaultActiveKey={params.id} activeKey={params.id} onChange={callback}>
+        <Tabs
+          defaultActiveKey={1}
+          activeKey={location.query.key}
+          onChange={callback}
+        >
           <TabPane tab="个人资料" key="1">
             <UserEdit user={user} dispatch={dispatch} />
           </TabPane>

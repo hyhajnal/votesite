@@ -1,24 +1,34 @@
 {
   "entry": "src/index.js",
-  "env": {
-    "development": {
-      "extraBabelPlugins": [
-        "dva-hmr",
-        "transform-runtime",
-        ["import", { "libraryName": "antd", "style": "css" }]
-      ]
-    },
-    "production": {
-      "extraBabelPlugins": [
-        "transform-runtime"
-      ]
-    }
-  },
+  "disableCSSModules": false,
+  "publicPath": "/",
+  "autoprefixer": null,
   "proxy": {
     "/api": {
       "target": "http://localhost:3000/",
       "changeOrigin": true,
-      "pathRewrite": { "^/api": "" }
+      "pathRewrite": { "^/api" : "" }
     }
+  },
+  "extraBabelPlugins": [
+    "transform-runtime",
+    ["import", { "libraryName": "antd", "style": true }]
+  ],
+  "env": {
+    "development": {
+      "extraBabelPlugins": [
+        "dva-hmr"
+      ]
+    }
+  },
+  "dllPlugin": {
+    "exclude": [
+      "babel-runtime"
+    ],
+    "include": [
+      "dva/router",
+      "dva/saga",
+      "dva/fetch"
+    ]
   }
 }

@@ -27,19 +27,24 @@ export const createFormat = (values, edit) => {
     }
   }
 
+  // key --> index
+  const keys = values.keys.concat();
+  const mapkeys = values.keys.sort();
+
   if (!edit) {
-    titles.forEach((title, i) => {
+    keys.forEach((key) => {
+      const i = mapkeys.indexOf(key);
       votelist.push({
-        title, desc: descs[i], pic: pics[i], num: 0,
+        title: titles[i], desc: descs[i], pic: pics[i], num: 0,
       });
     });
   } else {
-    items.forEach((item, i) => {
-      votelist.push({ ...item, title: titles[i], desc: descs[i], pic: pics[i] });
+    keys.forEach((key) => {
+      const i = mapkeys.indexOf(key);
+      votelist.push({ ...items[i], title: titles[i], desc: descs[i], pic: pics[i] });
     });
   }
   voteform = { ...voteform, votelist, create_time, end_time };
-  console.log(voteform);
   return voteform;
 };
 
@@ -61,7 +66,6 @@ export const editFormat = (vote) => {
       [`item${i}`]: { value: item } };
   });
   voteEdit = { ...voteEdit, keys: { value: keys } };
-  console.log(voteEdit);
   return voteEdit;
 };
 

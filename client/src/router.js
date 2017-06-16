@@ -23,10 +23,12 @@ function RouterConfig({ history }) {
       <Route path="/voteEdit" component={VoteEdit} />
       <Route path="/voteCreate" component={VoteCreate} />
       <Route path="/about" component={About} />
-      <Route path="/me/:id" component={Me} />
+      {/* <Route path="/me/:id" component={Me} />*/}
+      <Route path="/me" component={Me} />
       <Route path="/other" component={Other} />
       <Route path="/register" component={Register} />
-      <Route path="/redirect/:id" component={Redirect} />
+      <Route path="/redirect" component={Redirect} />
+      {/* <Route path="/redirect/:id" component={Redirect} />*/}
       <Route path="/search" component={Search} />
     </Router>
   );

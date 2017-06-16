@@ -4,9 +4,11 @@ import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import convert from 'koa-convert';
 import json from 'koa-json';
+//import cors from 'koa-cors';
 import mongoose from 'mongoose';
 import session from 'koa-session';
 import serve from "koa-static2";
+var cors = require('./cors');
 import routes from './routes';
 import config from './config';
 import response from './middleware/resdata';
@@ -22,6 +24,9 @@ const CONFIG = {
 };
 
 //用koa-convert对(generator函数)＊function语法糖进行转换
+app.use(cors({
+  credentials: true
+}));
 app.use(convert(bodyParser()));
 app.use(convert(session(CONFIG, app)));
 //统一response

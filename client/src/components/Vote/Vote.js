@@ -5,7 +5,7 @@ import {
   InputNumber, Row } from 'antd';
 
 import VoteItem from './VoteItem';
-import { createFormat, editFormat } from './voteRs';
+import { createFormat } from './voteRs';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -219,10 +219,8 @@ class Vote extends Component {
     );
   }
 }
-const VoteForm = Form.create({
-  mapPropsToFields(props) {
-    if (props.vote) return editFormat(props.vote);
-  },
-})(Vote);
+
+const VoteForm = Form.create()(Vote);
+
 
 export default VoteForm;

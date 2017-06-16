@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Carousel, Row, Col, Radio, Icon, Button, Spin } from 'antd';
+import { Row, Col, Radio, Button, Spin } from 'antd';
 import MainLayout from '../components/MainLayout/MainLayout';
 import ArticalItem from '../components/Home/ArticalItem';
 import styles from './IndexPage.less';
@@ -13,7 +13,7 @@ const RadioGroup = Radio.Group;
 let page = 1;
 
 const listquery = {
-  sortkey: 'create_time',
+  sortkey: 'post_time',
   tag: '',
 };
 
@@ -55,15 +55,16 @@ function getMore(dispatch) {
   });
 }
 
-function follow(e, relation, dispatch) {
-  e.stopPropgation();
-  dispatch({ type: 'vote/tofollow', payload: { relation } });
-}
+// function follow(e, relation, dispatch) {
+//   console.log(e);
+//   e.stopPropgation();
+//   dispatch({ type: 'vote/tofollow', payload: { relation } });
+// }
 
-function unfollow(e, relation, dispatch) {
-  e.stopepropagation();
-  dispatch({ type: 'vote/unfollow', payload: { relation } });
-}
+// function unfollow(e, relation, dispatch) {
+//   e.stopepropagation();
+//   dispatch({ type: 'vote/unfollow', payload: { relation } });
+// }
 
 function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
   const article = [];
@@ -80,63 +81,60 @@ function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
   });
   return (
     <MainLayout location={location}>
-      <Carousel autoplay>
-        <div><h3>1</h3></div>
-        <div><h3>2</h3></div>
-        <div><h3>3</h3></div>
-        <div><h3>4</h3></div>
-      </Carousel>
 
       <div className="article-content">
-        <Row type="flex" align="start" style={{ margin: '20px' }}>
-          <RadioGroup onChange={e => onChange2(e, dispatch)}>
-            <Radio value={'all'} key={-1}>
-              <Col className={styles.topic}>
-                <img
-                  src="https://upload-images.jianshu.io/upload_images/1980684-23785feb7da2370e.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/375/h/300"
-                  width="32" height="32" alt="全部"
-                />
-                全部&nbsp;&nbsp;
-              </Col>
-            </Radio>
-            {
-              topics.map((item, index) => {
-                const relation = {
-                  userId,
-                  otherId: item._id,
-                  type: 'topic',
-                };
-                return (
-                  <Radio value={item.name} key={index + item}>
-                    <Col className={styles.topic}>
-                      <img src={item.pic} width="32" height="32" alt={item.name} />
-                      {item.name}&nbsp;&nbsp;{item.vote_count}
-                      {item.isfollow ?
-                        <Icon
-                          className="gutter-h"
-                          type="heart"
-                          onClick={e => unfollow(e, relation, dispatch)}
-                        /> :
-                        <Icon
-                          className="gutter-h"
-                          type="heart-o"
-                          onClick={e => follow(e, relation, dispatch)}
-                        />
-                      }
-                    </Col>
-                  </Radio>
-                );
-              })
-            }
-          </RadioGroup>
-        </Row>
+        {topics.length > 0 ?
+          <Row type="flex" align="start" style={{ margin: '20px' }}>
+            <RadioGroup onChange={e => onChange2(e, dispatch)}>
+              <Radio value={'all'} key={-1}>
+                <Col className={styles.topic}>
+                  <img
+                    src="https://upload-images.jianshu.io/upload_images/1980684-23785feb7da2370e.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/375/h/300"
+                    width="32" height="32" alt="全部"
+                  />
+                  全部&nbsp;&nbsp;
+                </Col>
+              </Radio>
+              {
+                topics.map((item, index) => {
+                  /* const relation = {
+                    userId,
+                    otherId: item._id,
+                    type: 'topic',
+                  };*/
+                  return (
+                    <Radio value={item.name} key={index + item}>
+                      <Col className={styles.topic}>
+                        <img src={item.pic} width="32" height="32" alt={item.name} />
+                        {item.name}&nbsp;&nbsp;{item.vote_count}
+                        {/* {item.isfollow ?
+                          <Icon
+                            className="gutter-h"
+                            type="heart"
+                            onClick={e => unfollow(e, relation, dispatch)}
+                          /> :
+                          <Icon
+                            className="gutter-h"
+                            type="heart-o"
+                            onClick={e => follow(e, relation, dispatch)}
+                          />
+                        }*/}
+                      </Col>
+                    </Radio>
+                  );
+                })
+              }
+            </RadioGroup>
+          </Row>
+        : null
+        }
         <Row type="flex" justify="space-around" style={{ margin: '20px' }}>
           <RadioGroup defaultValue="create_time" size="large" onChange={e => onChange1(e, dispatch)}>
             <RadioButton value="view">最热</RadioButton>
             <RadioButton value="create_time">最新</RadioButton>
           </RadioGroup>
         </Row>
-        <div className="align-center gutter-vl-m"><Spin spinning={loading} /></div>
+        <div className="align-center gutter-vl-m"><Spin spinning={loading && page === 1} /></div>
         {article.length === 0 && !loading ?
           <div className={styles.nodata}><Nodata /></div> : article }
         <Row type="flex" align="center" className="gutter-vl-m">
@@ -146,7 +144,7 @@ function IndexPage({ location, posts, loading, topics, dispatch, userId }) {
                 { article.length % LIMIT === 0 ? '加载更多' : '没有更多了' }
               </Button> : null
           }
-          <div><Spin spinning={loading} /></div>
+          <div><Spin spinning={loading && page > 1} /></div>
         </Row>
       </div>
     </MainLayout>

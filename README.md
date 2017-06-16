@@ -12,11 +12,27 @@ git clone git@github.com:hyhajnal/votesite.git
 cd votesite/server
 yarn start
 ```
-
 ``` bash
 cd votesite/client
 yarn start
 ```
+
+### 外网访问，没有公网ip，本地服务器
+* 代码打包
+
+  dva打包需要将路由换成hashHistory模式
+
+  yarn build -> index.html,index.css,index.js -> 部署到静态服务器（github pages）
+
+* 本地开启服务器（后端代码），内网穿透进行端口映射
+
+  本地电脑作为服务器，没有公网IP？
+
+  [Sunny-Ngrok](https://www.ngrok.cc)
+
+  开启内网穿透
+  ./sunny clientid fd8dd60b66373ba3隧道号
+
 
 ### vscode 配置 eslint
 

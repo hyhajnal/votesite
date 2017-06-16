@@ -1,28 +1,31 @@
 import request from '../utils/request';
-import { PAGE_SIZE } from '../constants';
+import { API } from '../constants';
 
-export function fetch({ page }) {
+export function fetch() {
   // Get请求
-  return request(`/api/users?_page=${page}&_limit=${PAGE_SIZE}`);
+  return request(`${API}/stu/list`);
 }
 
 export function remove(id) {
-  return request(`/api/users/${id}`, {
-    method: 'DELETE',
-  });
+  return request(`${API}/stu/delete/${id}`);
 }
 
-export function patch(id, values) {
-  // POST请求
-  return request(`/api/users/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify(values),
-  });
-}
-
-export function create(values) {
-  return request('/api/users', {
+export function create(stu) {
+  return request(`${API}/stu/add`, {
     method: 'POST',
-    body: JSON.stringify(values),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(stu),
+  });
+}
+
+export function edit(stu) {
+  return request(`${API}/stu/edit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(stu),
   });
 }

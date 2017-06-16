@@ -1,11 +1,12 @@
 import request from '../utils/request';
+import { API } from '../constants';
 
 export function user() {
-  return request('/api/user/info');
+  return request(`${API}/user/info`);
 }
 
 export function edit(edituser) {
-  return request('/api/user/edit', {
+  return request(`${API}/user/edit`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -15,20 +16,20 @@ export function edit(edituser) {
 }
 
 export function following() {
-  return request('/api/relation/following');
+  return request(`${API}/relation/following`);
 }
 
 export function follower() {
-  return request('/api/relation/follower');
+  return request(`${API}/relation/follower`);
 }
 
 export function fetchAll(id) {
-  const url = id === undefined ? '/api/relation/all' : `/api/relation/all?otherId=${id}`;
+  const url = id === undefined ? `${API}/relation/all` : `${API}/relation/all?otherId=${id}`;
   return request(url);
 }
 
 export function tofollow(relation) {
-  return request('/api/relation/tofollow', {
+  return request(`${API}/relation/tofollow`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -38,7 +39,7 @@ export function tofollow(relation) {
 }
 
 export function unfollow(relation) {
-  return request('/api/relation/unfollow', {
+  return request(`${API}/relation/unfollow`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,7 +49,7 @@ export function unfollow(relation) {
 }
 
 export function reg(newuser) {
-  return request('/api/user/reg', {
+  return request(`${API}/user/reg`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ export function reg(newuser) {
 }
 
 export function login(newuser) {
-  return request('/api/user/login', {
+  return request(`${API}/user/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -68,9 +69,9 @@ export function login(newuser) {
 }
 
 export function logout() {
-  return request('/api/user/logout');
+  return request(`${API}/user/logout`);
 }
 
 export function search(key) {
-  return request(`/api/common/search/${key}`);
+  return request(`${API}/common/search/${key}`);
 }

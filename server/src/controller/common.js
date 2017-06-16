@@ -40,7 +40,7 @@ class commonController {
     // let user = await userModel.findById(ctx.session.userId);
     // user.avator = `http://localhost:3000/static/upload/${ctx.session.userId}.${type}`;
     // await user.save();
-    ctx.success(`http://localhost:3000/static/upload/${ctx.req.body.savename}.${type}`, '保存成功！');
+    ctx.success(`static/upload/${ctx.req.body.savename}.${type}`, '保存成功！');
   }
 
 }

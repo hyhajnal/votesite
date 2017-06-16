@@ -1,36 +1,38 @@
 import request from '../utils/request';
-import { LIMIT } from '../constants';
+import { LIMIT, API } from '../constants';
 
 // Vote
 
 export function fetchList({ query, page }) {
-  return request(`/api/vote/list/${page}/${LIMIT}${query}`);
+  return request(`${API}/vote/list/${page}/${LIMIT}${query}`);
 }
 
 export function fetchVote(_id) {
-  return request(`/api/vote/detail/${_id}`);
+  return request(`${API}/vote/detail/${_id}`);
 }
 
 export function fetchTopics() {
-  return request('/api/vote/topics');
+  return request(`${API}/vote/topics`);
 }
 
 export function toVote({ voteId, idx }) {
-  return request(`/api/vote/tovote/${voteId}/${idx}`);
+  return request(`${API}/vote/tovote/${voteId}/${idx}`);
+}
+
+export function changestateVote({ voteId, tostart }) {
+  return request(`${API}/vote/endvote/${voteId}/${tostart}`);
+}
+
+export function delVote({ voteId }) {
+  return request(`${API}/vote/delvote/${voteId}`);
 }
 
 export function toFollow(voteId) {
-  return request(`/api/vote/follow/${voteId}`);
-}
-
-export function delVote(id) {
-  return request(`/api/vote/delete/${id}`, {
-    method: 'DELETE',
-  });
+  return request(`${API}/vote/follow/${voteId}`);
 }
 
 export function createVote({ vote }) {
-  return request('/api/vote/create', {
+  return request(`${API}/vote/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,7 +42,7 @@ export function createVote({ vote }) {
 }
 
 export function editVote({ vote, id }) {
-  return request(`/api/vote/edit/${id}`, {
+  return request(`${API}/vote/edit/${id}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -52,7 +54,7 @@ export function editVote({ vote, id }) {
 // Comment
 
 export function toComment(comment) {
-  return request('/api/comment/create', {
+  return request(`${API}/comment/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -62,11 +64,11 @@ export function toComment(comment) {
 }
 
 export function toStar(commentId) {
-  return request(`/api/comment/star/${commentId}`);
+  return request(`${API}/comment/star/${commentId}`);
 }
 
 export function delComment(commentId, pid, voteId) {
-  return request(`/api/comment/delete/${commentId}/${pid}/${voteId}`, {
+  return request(`${API}/comment/delete/${commentId}/${pid}/${voteId}`, {
     method: 'DELETE',
   });
 }

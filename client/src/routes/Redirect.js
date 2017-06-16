@@ -1,20 +1,22 @@
 import React from 'react';
 import { connect } from 'dva';
-import { browserHistory } from 'dva/router';
+// import { browserHistory } from 'dva/router';
+import { hashHistory } from 'dva/router';
 import { Row, Button } from 'antd';
 // import styles from './Redirect.css';
 import LogLayout from '../components/MainLayout/LogLayout';
 
 function redirect() {
-  browserHistory.push('/login');
+  // browserHistory.push('/login');
+  hashHistory.push('/login');
 }
 
-function Redirect({ params }) {
+function Redirect({ location }) {
   return (
     <LogLayout>
       <h2 className="align-center">请记住你的帐号</h2>
       <h1 style={{ color: '#F4364C' }} className="align-center gutter-vl-m">
-        { params.id }
+        { location.query.id }
       </h1>
       <Row>
         <Button type="primary" size="large" onClick={redirect}>

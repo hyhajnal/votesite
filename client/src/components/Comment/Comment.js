@@ -5,6 +5,7 @@ import { Link } from 'dva/router';
 import classnames from 'classnames';
 import styles from './Comment.less';
 import timeFilter from '../../utils/timefilter';
+import { API } from '../../constants';
 
 const { toEditorState, toString } = Mention;
 const Nav = Mention.Nav;
@@ -36,7 +37,7 @@ class Comment extends Component {
     const suggestions = filtered.map(suggestion =>
       <Nav value={suggestion.name} data={suggestion} disabled={suggestion.disabled}>
         <span>
-          <img alt={suggestion.name} style={{ height: 16, width: 16, marginRight: 5, float: 'left' }} src={suggestion.icon} />
+          <img alt={suggestion.name} style={{ height: 16, width: 16, marginRight: 5, float: 'left' }} src={`${API}/${suggestion.icon}`} />
           {suggestion.name}
         </span>
       </Nav>);
@@ -119,7 +120,7 @@ class Comment extends Component {
               <Col>
                 <img
                   alt="example" width="30" height="30"
-                  className="avator-c" src={comment.from.avator}
+                  className="avator-c" src={`${API}/${comment.from.avator}`}
                 />
                 <span className="label-1 gutter-h">
                   <Link to={`/other?id=${comment.from._id}`}>{comment.from.name}</Link>

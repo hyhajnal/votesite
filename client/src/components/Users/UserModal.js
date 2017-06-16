@@ -28,8 +28,13 @@ class UserEditModal extends Component {
   okHandler = () => {
     const { onOk } = this.props;
     this.props.form.validateFields((err, values) => {
-      if (!err) {
-        onOk(values);
+      const { _id } = this.props.record;
+      if (!err && values) {
+        if (!_id) {
+          onOk(values);
+        } else {
+          onOk({ ...values, _id });
+        }
         this.hideModelHandler();
       }
     });
@@ -38,7 +43,8 @@ class UserEditModal extends Component {
   render() {
     const { children } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { name, email, website } = this.props.record;
+    const { name, tel, address } = this.props.record;
+    const title = !name ? '新增' : '修改';
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -50,7 +56,7 @@ class UserEditModal extends Component {
           { children }
         </span>
         <Modal
-          title="Edit User"
+          title={title}
           visible={this.state.visible}
           onOk={this.okHandler}
           onCancel={this.hideModelHandler}
@@ -58,31 +64,34 @@ class UserEditModal extends Component {
           <Form layout="horizontal" onSubmit={this.okHandler}>
             <FormItem
               {...formItemLayout}
-              label="Name"
+              label="姓名"
             >
               {
                 getFieldDecorator('name', {
                   initialValue: name,
+                  rules: [{ required: true, message: '请填写姓名!' }],
                 })(<Input />)
               }
             </FormItem>
             <FormItem
               {...formItemLayout}
-              label="Email"
+              label="电话"
             >
               {
-                getFieldDecorator('email', {
-                  initialValue: email,
+                getFieldDecorator('tel', {
+                  initialValue: tel,
+                  rules: [{ pattern: /^1[34578]\d{9}$/, required: true, message: '请输入正确的电话号码!' }],
                 })(<Input />)
               }
             </FormItem>
             <FormItem
               {...formItemLayout}
-              label="Website"
+              label="住址"
             >
               {
-                getFieldDecorator('website', {
-                  initialValue: website,
+                getFieldDecorator('address', {
+                  initialValue: address,
+                  rules: [{ required: true, message: '请填写住址!' }],
                 })(<Input />)
               }
             </FormItem>

@@ -17,6 +17,9 @@ cd votesite/client
 yarn start
 ```
 
+### Screenshot
+![votesit](./screenshot.png)
+
 ### 外网访问，没有公网ip，本地服务器
 * 代码打包
 
@@ -58,7 +61,3 @@ yarn start
 
 ### CRLF & LF
 linux 和 windows 的end_of_line 不一致，linux采用LF，windows采用CRLF。
-以下 git 命令可以将crlf转成lf
-``` bash
-git config --global core.autocrlf true
-```

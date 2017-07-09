@@ -3,8 +3,9 @@
 }
 :global(.content){
 	/*min-height: 800px;*/
-	width:980px;
-	margin: 60px auto;
+	/*width:980px;*/
+	margin: 60px 48px;
+	margin-top: 80px;
 	height: auto !important;
 	background: #fff;
 }

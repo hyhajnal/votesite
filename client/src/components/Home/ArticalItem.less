@@ -1,0 +1,53 @@
+
+.card{
+	margin: auto;
+	margin-bottom: 20px; 
+	position: relative;
+	background: #fff;
+	// &:before{
+	// 	content: '';
+	// 	position: absolute;
+	// 	width: 4px;
+	// 	height: 40px;
+	// 	background: #24313c;
+	// 	left: 50%;
+	// 	bottom: 0;
+	// 	transform: translate(-50%, 100%);
+	// }
+	// &:after{
+	// 	content: '';
+	// 	position: absolute;
+	// 	width: 14px;
+	// 	height: 14px;
+	// 	background: #1ab188;
+	// 	left: 50%;
+	// 	border-radius: 100%;
+	// 	transform: translate(-50%, 100%);
+	// 	bottom: -13px;
+	// }
+	&:last-of-type:after{
+		display: none;
+	}
+}
+:global(.ant-card){
+	overflow: visible;
+}
+.card:first-child:before{
+	content: none;
+}
+.redirect:hover{
+	cursor: pointer;
+}
+
+.fenlei{
+	border: 1px solid #ec6149;
+	color: #ec6149;
+	padding:0 5px;
+	border-radius: 3px;
+	margin-right:5px; 
+}
+
+.footlabel{
+	display: inline-block;
+	padding:5px;
+}

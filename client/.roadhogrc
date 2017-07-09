@@ -3,6 +3,10 @@
   "disableCSSModules": false,
   "publicPath": "/",
   "autoprefixer": null,
+  "theme": {
+    "primary-color": "#3dbd7d",
+    "body-background": "#24313c"
+  },
   "proxy": {
     "/api": {
       "target": "http://localhost:3000/",

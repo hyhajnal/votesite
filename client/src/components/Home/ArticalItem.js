@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Icon, Card, message } from 'antd';
 // import { browserHistory, Link } from 'dva/router';
 import { hashHistory, Link } from 'dva/router';
-import styles from './ArticalItem.css';
+import styles from './ArticalItem.less';
 import timeFilter from '../../utils/timefilter';
 import { API } from '../../constants';
 
@@ -40,7 +40,7 @@ class ArticalItem extends Component {
     return (
       // <Link to={{ pathname: "/vote", query: {_id: post._id} }}>
       <Card
-        loading={loading} style={{ width: 800 }} bordered={false}
+        loading={loading} bordered={false}
         className={styles.card}
       >
         <div className="card-head">

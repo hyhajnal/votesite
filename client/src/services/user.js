@@ -5,6 +5,10 @@ export function user() {
   return request(`${API}/user/info`);
 }
 
+export function hotuser() {
+  return request(`${API}/user/hotuser`);
+}
+
 export function edit(edituser) {
   return request(`${API}/user/edit`, {
     method: 'POST',

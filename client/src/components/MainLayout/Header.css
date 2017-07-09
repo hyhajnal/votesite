@@ -4,16 +4,13 @@
 	left:0;
 	width:100%;
 	z-index: 998;
-	background: #fff;
-	border-bottom: 1px solid #e9e9e9;
-}
-
-:global(#header.ant-menu-horizontal){
-	border:none;
+	background: #404040;
+	min-width: 900px;
 }
 
 .logout{
 	margin-right: 20px;
 	cursor: pointer;
-	color: #EC6149;
+	margin-left: 10px;
+	color: #3dbd7d;
 }

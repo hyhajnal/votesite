@@ -6,7 +6,7 @@ import Vote from './routes/Vote';
 import Login from './routes/Login.js';
 import VoteEdit from './routes/VoteEdit.js';
 import VoteCreate from './routes/VoteCreate';
-import About from './routes/About';
+import Markdown from './routes/Markdown';
 import Me from './routes/Me';
 import Other from './routes/Other';
 import Register from './routes/Register.js';
@@ -22,7 +22,7 @@ function RouterConfig({ history }) {
       <Route path="/login" component={Login} />
       <Route path="/voteEdit" component={VoteEdit} />
       <Route path="/voteCreate" component={VoteCreate} />
-      <Route path="/about" component={About} />
+      <Route path="/markdown" component={Markdown} />
       {/* <Route path="/me/:id" component={Me} />*/}
       <Route path="/me" component={Me} />
       <Route path="/other" component={Other} />

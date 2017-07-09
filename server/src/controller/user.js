@@ -19,6 +19,15 @@ class UserController {
     const user = await userModel.findById(userId);
     ctx.success(user);
   }
+
+  /**
+   * 查询个人信息
+   * @param {String} userId
+   */
+  static async hotuser( ctx, next ){
+    const userlist = await userModel.find({});
+    ctx.success(userlist);
+  }
   
   /**
    * 修改个人信息

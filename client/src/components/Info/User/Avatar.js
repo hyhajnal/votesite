@@ -51,9 +51,9 @@ class Avatar extends React.Component {
         onChange={this.handleChange}
       >
         {
-          imageUrl ?
-            <img src={imageUrl} alt="" className={styles.avatar} width="150" height="150" /> :
-            <Icon type="plus" className={styles.trigger} />
+          !this.props.pic ?
+            <Icon type="plus" className={styles.trigger} /> :
+            <img src={imageUrl} alt="" className={styles.avatar} width="150" height="150" />
         }
       </Upload>
     );

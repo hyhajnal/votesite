@@ -5,6 +5,7 @@ import { isLogin } from '../../middleware/auth';
 
 router 
   .get('/info', isLogin, userController.info) //查询个人信息
+  .get('/hotuser', userController.hotuser) //活跃用户
   .post('/edit', isLogin, userController.edit) //修改个人信息
   .get('/reply', isLogin, userController.reply) //查询收到的回复
   .get('/vote', isLogin, userController.vote) //查询发起的投票

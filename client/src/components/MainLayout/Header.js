@@ -23,13 +23,13 @@ function Header({ collapsedCls, location, user, dispatch }) {
           <Menu
             selectedKeys={[location.pathname]}
             mode="horizontal"
-            theme="drak"
+            theme="dark"
           >
             <Menu.Item key="/">
               <Link to="/"><Icon type="home" />首页</Link>
             </Menu.Item>
-            <Menu.Item key="/about">
-              <Link to="/about"><Icon type="smail-o" />关于</Link>
+            <Menu.Item key="/markdown">
+              <Link to="/markdown"><Icon type="smail-o" />写文章</Link>
             </Menu.Item>
             <Menu.Item key="/users">
               <Link to="/users"><Icon type="smail-o" />列表</Link>
@@ -46,8 +46,10 @@ function Header({ collapsedCls, location, user, dispatch }) {
         <Col span={8}>
           { user.name ?
             <span>
-              <Link to="voteCreate"><Button type="danger gutter-h-m" ghost >发起投票</Button></Link>
-              <span>你好,{user.name}<em className={styles.logout} onClick={logout}>退出</em></span>
+              <Link to="voteCreate"><Button type="primary gutter-h-m" >发起投票</Button></Link>
+              <span style={{ color: '#fff' }}>你好,{user.name}
+                <strong className={styles.logout} onClick={logout}>退出</strong>
+              </span>
             </span>
              :
             <Link to="login"><Button type="primary gutter-h-m">登录</Button></Link>

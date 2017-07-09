@@ -10,6 +10,7 @@ export default {
     all: {},
     search: {},
     list: {},
+    hotuser: {},
   },
   reducers: {
     save(state, { payload: { type, data } }) {
@@ -26,6 +27,10 @@ export default {
     *fetch_all({ payload }, { call, put }) {
       const { data } = yield call(userService.fetchAll, payload);
       yield put({ type: 'save', payload: { type: 'all', data: data.data } });
+    },
+    *fetch_hotuser({ payload }, { call, put }) {
+      const { data } = yield call(userService.hotuser);
+      yield put({ type: 'save', payload: { type: 'hotuser', data: data.data } });
     },
     *tofollow({ payload: { relation, id } }, { call, put }) {
       const { data } = yield call(userService.tofollow, relation);
@@ -113,9 +118,11 @@ export default {
       let markMe = 0;
       // !(/^(register)?(redirect\/\w+)?(login)?$/.test(pathname))
       return history.listen(({ pathname, query }) => {
-        console.log(pathname);
         if (parseInt(window.localStorage.getItem('login'), 10)) {
           dispatch({ type: 'fetch', payload: { type: 'user' } });
+        }
+        if (pathname === '/') {
+          dispatch({ type: 'fetch_hotuser' });
         }
         if (pathname === '/other' && markMe !== query.id) {
           dispatch({ type: 'fetch_all', payload: query.id });
